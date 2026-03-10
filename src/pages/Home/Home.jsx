@@ -5,3 +5,12 @@ import { getWeatherForLocation, getTicketmasterEvents } from "../../services/ext
 import EventCard from "../../components/events/EventCard";
 import Loader from "../../components/common/Loader";
 import "./Home.css";
+
+function Home(){
+    const [featured, setFeatured] = useState([]);
+    const [weather, setWeather] = useState([]);
+    const [tmEvents, setTmEvents] = useState([]);
+    const [loading, setLoading] = useState(true);
+}
+
+export default Home;
