@@ -13,4 +13,32 @@ function Home(){
     const [loading, setLoading] = useState(true);
 }
 
+useEffect(() => {
+        async function loadData() {
+            try {
+                const [evts, wx, tm] = await Promise.all([
+                    getFeaturedEvents(),
+                    getWeatherForLocation(53.3498, -6.2603), 
+                    getTicketmasterEvents("Dublin", 4),
+                ]);
+                setFeatured(evts);
+                setWeather(wx);
+                setTmEvents(tm);
+            } catch (err) {
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        }
+        loadData();
+    }, []);
+
+    const stats = [
+        { value: "500+", label: "Events Listed", emoji: "🎪" },
+        { value: "20K+", label: "Happy Attendees", emoji: "😊" },
+        { value: "50+", label: "Cities Covered", emoji: "🌍" },
+        { value: "100%", label: "Free to Use", emoji: "🎉" },
+    ];
+
+
 export default Home;
