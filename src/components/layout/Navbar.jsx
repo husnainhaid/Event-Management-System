@@ -40,7 +40,21 @@ function Navbar() {
 
     return (
        <header className={`navbar ${scrolled ? "navbar--scrolled" : ""}`}>
-        
+         <div className="navbar__inner">
+         <Link to="/" className="navbar__logo" onClick={closeMenu}>
+                    <span className="navbar__logo-icon">⚡</span>
+                    <span className="navbar__logo-text">EventPro</span>
+                </Link>
+                <nav className="navbar__links">
+                   <NavLink to="/" className={({ isActive }) => `navbar__link ${isActive ? "active" : ""}`} end>
+                        Home
+                    </NavLink>
+                    <NavLink to="/events" className={({ isActive }) => `navbar__link ${isActive ? "active" : ""}`}>
+                        Browse Events
+                    </NavLink>
+
+                </nav>
+         </div>
        </header>
 
 

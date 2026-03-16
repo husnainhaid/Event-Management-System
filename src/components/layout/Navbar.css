@@ -46,3 +46,29 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
+
+.navbar__links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.navbar__link {
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    transition: color 0.2s, background 0.2s;
+    white-space: nowrap;
+}
+
+.navbar__link:hover,
+.navbar__link.active {
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.navbar__link.active {
+    color: var(--primary-light);
+}
