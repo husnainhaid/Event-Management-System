@@ -23,3 +23,26 @@
     padding: 0 24px;
     height: 68px;
 }
+
+.navbar__logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    font-size: 1.3rem;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    text-decoration: none;
+}
+
+.navbar__logo-icon {
+    font-size: 1.5rem;
+    filter: drop-shadow(0 0 8px rgba(79, 70, 229, 0.8));
+}
+
+.navbar__logo-text {
+    background: linear-gradient(135deg, #e2e8f0, var(--primary-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
