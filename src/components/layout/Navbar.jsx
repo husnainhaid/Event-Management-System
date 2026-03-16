@@ -28,5 +28,21 @@ function Navbar() {
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
+     
+    const handleLogout = () => {
+        logout();
+        setDropdownOpen(false);
+        setMenuOpen(false);
+        navigate("/");
+    };
 
+    const closeMenu = () => setMenuOpen(false);
+
+    return (
+       <header className={`navbar ${scrolled ? "navbar--scrolled" : ""}`}>
+        
+       </header>
+
+
+    );
 }
