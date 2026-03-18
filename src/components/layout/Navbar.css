@@ -110,3 +110,26 @@ navbar__auth-buttons {
     border-radius: 50%;
     object-fit: cover;
 }
+.navbar__username {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.navbar__chevron {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+}
+
+.navbar__dropdown {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    min-width: 240px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    animation: dropdownFade 0.18s ease;
+}
