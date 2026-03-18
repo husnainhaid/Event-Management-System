@@ -52,7 +52,23 @@ function Navbar() {
                     <NavLink to="/events" className={({ isActive }) => `navbar__link ${isActive ? "active" : ""}`}>
                         Browse Events
                     </NavLink>
-
+                        {isAuthenticated && (
+                        <>
+                            {user?.role === "admin" && (
+                                <NavLink to="/create" className={({ isActive }) => `navbar__link ${isActive ? "active" : ""}`}>
+                                    + Create Event
+                                </NavLink>
+                            )}
+                            <NavLink to="/bookings" className={({ isActive }) => `navbar__link ${isActive ? "active" : ""}`}>
+                                My Bookings
+                            </NavLink>
+                            {user?.role === "admin" && (
+                                <NavLink to="/dashboard" className={({ isActive }) => `navbar__link ${isActive ? "active" : ""}`}>
+                                    Dashboard
+                                </NavLink>
+                            )}
+                        </>
+                    )}
                 </nav>
          </div>
        </header>

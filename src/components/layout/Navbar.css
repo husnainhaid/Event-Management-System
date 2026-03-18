@@ -72,3 +72,41 @@
 .navbar__link.active {
     color: var(--primary-light);
 }
+navbar__auth-buttons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.navbar__btn-sm {
+    padding: 8px 20px;
+    font-size: 0.875rem;
+}
+
+
+.navbar__user {
+    position: relative;
+}
+
+.navbar__avatar-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border);
+    border-radius: 40px;
+    padding: 6px 14px 6px 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.navbar__avatar-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.navbar__avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
