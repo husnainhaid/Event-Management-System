@@ -70,6 +70,27 @@ function Navbar() {
                         </>
                     )}
                 </nav>
+                     <div className="navbar__auth">
+                        {isAuthenticated ? (
+                              <div className="navbar__user" ref={dropdownRef}>
+                                 <button
+                                className="navbar__avatar-btn"
+                                onClick={() => setDropdownOpen((prev) => !prev)}
+                                aria-label="User menu"
+                            ></button>
+                                </div>
+
+                        ): (
+                               <div className="navbar__auth-buttons">
+
+                                
+                               </div>
+                        )}
+                     </div>
+
+
+
+
          </div>
        </header>
 
