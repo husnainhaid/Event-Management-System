@@ -17,3 +17,4 @@ if (loading) {
 
     return children;
 }
+export default ProtectedRoute;
