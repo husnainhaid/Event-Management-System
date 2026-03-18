@@ -26,6 +26,24 @@ const sizeMap = { sm: 24, md: 44, lg: 64 };
             )}
         </div>
     );
+      if (fullScreen) {
+        return (
+            <div
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    minHeight: "60vh",
+                }}
+            >
+                {spinner}
+            </div>
+        );
+    }
+
+    return spinner;
+
 
 }
 
+export default Loader;
