@@ -23,3 +23,30 @@
     display: inline-block;
     margin-bottom: 12px;
 }
+
+.footer__tagline {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+}
+
+.footer__col-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+}
+
+.footer__link {
+    display: block;
+    font-size: 0.87rem;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    transition: color 0.2s;
+}
+
+.footer__link:hover {
+    color: var(--primary-light);
+}

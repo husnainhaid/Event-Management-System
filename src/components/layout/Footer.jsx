@@ -14,6 +14,26 @@ function Footer() {
                         unforgettable events.
                     </p>
                 </div>
+                  <div className="footer__col">
+                    <h4 className="footer__col-title">Platform</h4>
+                    <Link to="/events" className="footer__link">Browse Events</Link>
+                    <Link to="/create" className="footer__link">Create Event</Link>
+                    <Link to="/bookings" className="footer__link">My Bookings</Link>
+                </div>
+
+                <div className="footer__col">
+                    <h4 className="footer__col-title">Account</h4>
+                    <Link to="/login" className="footer__link">Login</Link>
+                    <Link to="/register" className="footer__link">Sign Up</Link>
+                    <Link to="/dashboard" className="footer__link">Dashboard</Link>
+                </div>
+
+                <div className="footer__col">
+                    <h4 className="footer__col-title">Connect</h4>
+                    <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="footer__link">GitHub</a>
+                    <a href="mailto:info@eventpro.com" className="footer__link">Contact Us</a>
+                </div>
+
              </div>
          </footer>
     );
