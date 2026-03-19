@@ -17,3 +17,7 @@ function seedDemoUser() {
         localStorage.setItem("ep_user_registry", JSON.stringify(users));
     }
 }
+function loadRaw() {
+    const raw = localStorage.getItem("ep_user_registry");
+    return raw ? JSON.parse(raw) : [];
+}
