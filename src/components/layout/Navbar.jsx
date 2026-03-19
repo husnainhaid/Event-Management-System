@@ -108,7 +108,12 @@ function Navbar() {
 
                     ) : (
                         <div className="navbar__auth-buttons">
-
+                            <Link to="/login" className="btn btn-outline navbar__btn-sm">
+                                Log In
+                            </Link>
+                            <Link to="/register" className="btn btn-primary navbar__btn-sm">
+                                Sign Up
+                            </Link>
 
                         </div>
                     )}
