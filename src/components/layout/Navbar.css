@@ -133,3 +133,58 @@ navbar__auth-buttons {
     overflow: hidden;
     animation: dropdownFade 0.18s ease;
 }
+@keyframes dropdownFade {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.navbar__dropdown hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 4px 0;
+}
+
+.navbar__dropdown-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+}
+
+.navbar__dropdown-header img {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+}
+
+.navbar__dropdown-name {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--text);
+}
+
+.navbar__dropdown-email {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.navbar__dropdown-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 11px 16px;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: "Inter", sans-serif;
+    transition: background 0.18s, color 0.18s;
+}
