@@ -30,3 +30,4 @@ function getUserRegistry() {
 function saveUserRegistry(users) {
     localStorage.setItem("ep_user_registry", JSON.stringify(users));
 }
+
