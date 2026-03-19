@@ -14,3 +14,11 @@ export const CATEGORIES = [
     { value: "education", label: "Education", emoji: "📚" },
     { value: "networking", label: "Networking", emoji: "🤝" },
 ];
+
+
+export const STORAGE_KEYS = {
+    USER: "ep_user",
+    TOKEN: "ep_token",
+    EVENTS: "ep_events",
+    BOOKINGS: "ep_bookings",
+};
