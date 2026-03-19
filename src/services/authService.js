@@ -1,3 +1,4 @@
+
 import { STORAGE_KEYS } from "../utils/constants";
 import { generateId } from "../utils/formatters";
 
@@ -20,4 +21,12 @@ function seedDemoUser() {
 function loadRaw() {
     const raw = localStorage.getItem("ep_user_registry");
     return raw ? JSON.parse(raw) : [];
+}
+seedDemoUser();
+function getUserRegistry() {
+    return loadRaw();
+}
+
+function saveUserRegistry(users) {
+    localStorage.setItem("ep_user_registry", JSON.stringify(users));
 }

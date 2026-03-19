@@ -77,7 +77,12 @@ function Navbar() {
                                 className="navbar__avatar-btn"
                                 onClick={() => setDropdownOpen((prev) => !prev)}
                                 aria-label="User menu"
-                            ></button>
+                            >  <img src={user?.avatar} alt={user?.name} className="navbar__avatar" />
+                                <span className="navbar__username">{user?.name?.split(" ")[0]}</span>
+                                <span className="navbar__chevron">{dropdownOpen ? "▲" : "▼"}</span>
+                                
+                                
+                                </button>
                         </div>
 
                     ) : (
