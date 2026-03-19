@@ -81,6 +81,29 @@ function Navbar() {
                                 <span className="navbar__username">{user?.name?.split(" ")[0]}</span>
                                 <span className="navbar__chevron">{dropdownOpen ? "▲" : "▼"}</span>
                                 </button>
+                                          {dropdownOpen && (
+                                <div className="navbar__dropdown">
+                                    <div className="navbar__dropdown-header">
+                                        <img src={user?.avatar} alt={user?.name} />
+                                        <div>
+                                            <p className="navbar__dropdown-name">{user?.name}</p>
+                                            <p className="navbar__dropdown-email">{user?.email}</p>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <Link to="/bookings" className="navbar__dropdown-item" onClick={() => setDropdownOpen(false)}>
+                                        📋 My Bookings
+                                    </Link>
+                                    <Link to="/dashboard" className="navbar__dropdown-item" onClick={() => setDropdownOpen(false)}>
+                                        📊 Dashboard
+                                    </Link>
+                                    <hr />
+                                    <button className="navbar__dropdown-item navbar__dropdown-logout" onClick={handleLogout}>
+                                        🚪 Log Out
+                                    </button>
+                                </div>
+                            )}
+
                         </div>
 
                     ) : (
