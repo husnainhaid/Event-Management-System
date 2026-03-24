@@ -86,6 +86,11 @@ export const SEED_EVENTS = [
     },
 
 ];
+export const BOOKING_STATUS = {
+    CONFIRMED: "confirmed",
+    CANCELLED: "cancelled",
+    PENDING: "pending",
+};
 
 export const STORAGE_KEYS = {
     USER: "ep_user",
