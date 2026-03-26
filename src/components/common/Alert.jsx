@@ -26,6 +26,25 @@ const { bg, border, color } = COLORS[type] || COLORS.info;
 
     if (!message) return null;
 
+    return (
+             <div
+            role="alert"
+            style={{
+                display: "flex",
+                alignItems: "flex-start",
+                gap: 12,
+                padding: "14px 18px",
+                background: bg,
+                border: `1px solid ${border}`,
+                borderRadius: "var(--radius)",
+                color,
+                fontSize: "0.9rem",
+                marginBottom: 16,
+                animation: "fadeSlide 0.3s ease",
+            }}
+        ></div>
+    );
+
 
 
 }
