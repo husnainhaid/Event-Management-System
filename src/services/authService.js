@@ -31,3 +31,33 @@ function saveUserRegistry(users) {
     localStorage.setItem("ep_user_registry", JSON.stringify(users));
 }
 
+export async function registerUser({ name, email, password }) {
+    await delay(600); 
+
+    const users = getUserRegistry();
+    const existing = users.find((u) => u.email.toLowerCase() === email.toLowerCase());
+    if (existing) {
+        throw new Error("An account with this email already exists.");
+    }
+
+    const newUser = {
+        id: generateId("user"),
+        name,
+        email: email.toLowerCase(),
+        password, 
+        role: "attendee",
+        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=4f46e5&color=fff&size=128`,
+        createdAt: new Date().toISOString(),
+    };
+
+    users.push(newUser);
+    saveUserRegistry(users);
+
+    
+    const token = generateFakeJWT(newUser);
+    const safeUser = sanitiseUser(newUser);
+    localStorage.setItem(STORAGE_KEYS.TOKEN, token);
+    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(safeUser));
+
+    return { user: safeUser, token };
+}
