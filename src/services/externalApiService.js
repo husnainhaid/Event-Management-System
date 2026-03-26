@@ -53,3 +53,5 @@ function getWeatherIcon(code) {
     if (code <= 84) return "🌩️";
     return "⛈️";
 }
+
+const TM_API_KEY = "KkDJLsdC7hH2C1SvDMfrGwpxJmIPDrSr";
