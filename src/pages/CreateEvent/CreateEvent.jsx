@@ -4,3 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import { createEvent } from "../../services/eventService";
 import EventForm from "../../components/events/EventForm";
 import "./CreateEvent.css";
+
+function CreateEvent() {
+
+}
