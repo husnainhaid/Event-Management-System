@@ -42,7 +42,27 @@ const { bg, border, color } = COLORS[type] || COLORS.info;
                 marginBottom: 16,
                 animation: "fadeSlide 0.3s ease",
             }}
-        ></div>
+        >
+            <span style={{ fontSize: "1.1rem", flexShrink: 0 }}>{ICONS[type]}</span>
+            <span style={{ flex: 1, color: "var(--text)" }}>{message}</span>
+            {onClose && (
+                <button
+                    onClick={onClose}
+                    style={{
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        color: "var(--text-muted)",
+                        fontSize: "1rem",
+                        padding: 0,
+                        lineHeight: 1,
+                    }}
+                    aria-label="Close alert"
+                >
+                    ×
+                </button>
+            )}
+        </div>
     );
 
 
