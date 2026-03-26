@@ -13,3 +13,19 @@ const COLORS = {
     warning: { bg: "rgba(245,158,11,0.12)", border: "rgba(245,158,11,0.3)", color: "#f59e0b" },
     info: { bg: "rgba(79,70,229,0.12)", border: "rgba(79,70,229,0.3)", color: "var(--primary-light)" },
 };
+
+function Alert({ type = "info", message, onClose, autoClose = 0 }) {
+const { bg, border, color } = COLORS[type] || COLORS.info;
+
+    useEffect(() => {
+        if (autoClose > 0 && onClose) {
+            const t = setTimeout(onClose, autoClose);
+            return () => clearTimeout(t);
+        }
+    }, [autoClose, onClose]);
+
+    if (!message) return null;
+
+
+
+}
