@@ -68,3 +68,4 @@ const { bg, border, color } = COLORS[type] || COLORS.info;
 
 
 }
+export default Alert;
