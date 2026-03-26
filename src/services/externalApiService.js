@@ -55,3 +55,36 @@ function getWeatherIcon(code) {
 }
 
 const TM_API_KEY = "KkDJLsdC7hH2C1SvDMfrGwpxJmIPDrSr";
+
+export async function getTicketmasterEvents(city = "Dublin", size = 4) {
+    try {
+        const url = new URL("https://app.ticketmaster.com/discovery/v2/events.json");
+        url.searchParams.set("apikey", TM_API_KEY);
+        url.searchParams.set("city", city);
+        url.searchParams.set("size", size);
+        url.searchParams.set("sort", "date,asc");
+        url.searchParams.set("segmentName", "Music"); 
+
+        const res = await fetch(url.toString());
+        if (!res.ok) throw new Error("Ticketmaster API error");
+        const data = await res.json();
+
+        const rawEvents = data?._embedded?.events || [];
+        return rawEvents.map((ev) => ({
+            id: ev.id,
+            name: ev.name,
+            date: ev.dates?.start?.localDate,
+            time: ev.dates?.start?.localTime,
+            venue: ev._embedded?.venues?.[0]?.name || city,
+            city: ev._embedded?.venues?.[0]?.city?.name || city,
+            image: ev.images?.[0]?.url || "",
+            url: ev.url,
+            priceRange: ev.priceRanges
+                ? `€${ev.priceRanges[0].min}–€${ev.priceRanges[0].max}`
+                : "Check website",
+        }));
+    } catch (err) {
+        console.warn("Ticketmaster fetch failed:", err.message);
+        return []; 
+    }
+}
