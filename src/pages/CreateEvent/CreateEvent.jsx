@@ -10,4 +10,15 @@ function CreateEvent() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
 
+    const handleSubmit = async (data) => {
+        setLoading(true);
+        try {
+            const event = await createEvent(data, user.id);
+            navigate(`/events/${event.id}`);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
 }
