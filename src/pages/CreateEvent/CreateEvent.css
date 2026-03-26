@@ -10,7 +10,7 @@
     filter: drop-shadow(0 0 12px rgba(79, 70, 229, 0.5));
 }
 
-/* ── EventForm grid ── */
+/*  Event form remembrance for grid system*/
 .event-form__grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
