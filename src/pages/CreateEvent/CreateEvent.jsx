@@ -6,5 +6,8 @@ import EventForm from "../../components/events/EventForm";
 import "./CreateEvent.css";
 
 function CreateEvent() {
+    const { user } = useAuth();
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
 
 }
