@@ -1,0 +1,28 @@
+.create-event__header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.create-event__icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 0 12px rgba(79, 70, 229, 0.5));
+}
+
+/* ── EventForm grid ── */
+.event-form__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 20px;
+}
+
+.event-form__preview {
+    margin-bottom: 16px;
+}
+
+@media (max-width: 640px) {
+    .event-form__grid {
+        grid-template-columns: 1fr;
+    }
+}
