@@ -82,3 +82,23 @@ export async function loginUser({ email, password }) {
 
     return { user: safeUser, token };
 }
+export function logoutUser() {
+    localStorage.removeItem(STORAGE_KEYS.TOKEN);
+    localStorage.removeItem(STORAGE_KEYS.USER);
+}
+export function getCurrentUser() {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEYS.USER);
+        return raw ? JSON.parse(raw) : null;
+    } catch {
+        return null;
+    }
+}
+export function getToken() {
+    return localStorage.getItem(STORAGE_KEYS.TOKEN);
+}
+
+export function isAuthenticated() {
+    return !!getToken() && !!getCurrentUser();
+}
+
