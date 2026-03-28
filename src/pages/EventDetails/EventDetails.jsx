@@ -9,3 +9,19 @@ import Alert from "../../components/common/Alert";
 import { formatDate, formatTime, formatPrice, getAvailability } from "../../utils/formatters";
 import { CATEGORIES } from "../../utils/constants";
 import "./EventDetails.css";
+
+function EventDetails() {
+   const { id } = useParams();
+    const { user, isAuthenticated } = useAuth();
+    const navigate = useNavigate();
+
+    const [event, setEvent] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [alreadyBooked, setAlreadyBooked] = useState(false);
+    const [bookingId, setBookingId] = useState(null);
+    const [weather, setWeather] = useState(null);
+    const [alert, setAlert] = useState(null);
+    const [bookingLoading, setBookingLoading] = useState(false);
+
+
+}
