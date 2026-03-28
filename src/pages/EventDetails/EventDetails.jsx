@@ -69,5 +69,32 @@ function EventDetails() {
             setBookingLoading(false);
         }
     };
+    
+    
+    const handleCancel = async () => {
+        if (!bookingId) return;
+        setBookingLoading(true);
+        try {
+            await cancelBooking(bookingId, user.id);
+            setAlreadyBooked(false);
+            setBookingId(null);
+            setAlert({ type: "info", message: "Booking cancelled successfully." });
+        } catch (err) {
+            setAlert({ type: "error", message: err.message });
+        } finally {
+            setBookingLoading(false);
+        }
+    };
+
+    if (loading) return <Loader fullScreen message="Loading event…" />;
+    if (!event) return (
+        <div className="page" style={{ textAlign: "center", paddingTop: 80 }}>
+            <h2>Event not found</h2>
+            <Link to="/events" className="btn btn-primary" style={{ marginTop: 20 }}>Browse Events</Link>
+        </div>
+    );
+    const avail = getAvailability(event.capacity, event.attendees);
+    const catObj = CATEGORIES.find((c) => c.value === event.category);
+    const isSoldOut = avail.label === "Sold Out";
 
 }
