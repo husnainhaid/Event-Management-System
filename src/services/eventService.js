@@ -26,12 +26,12 @@ export async function getEvents({ search = "", category = "all", sort = "date" }
     await delay(400);
     let events = loadEvents();
 
-    // Filter by category
+  
     if (category && category !== "all") {
         events = events.filter((e) => e.category === category);
     }
 
-    // Search by title, description, or location
+    
     if (search.trim()) {
         const q = search.toLowerCase();
         events = events.filter(
@@ -43,7 +43,7 @@ export async function getEvents({ search = "", category = "all", sort = "date" }
         );
     }
 
-    // Sort
+    
     if (sort === "date") events.sort((a, b) => new Date(a.date) - new Date(b.date));
     if (sort === "price-asc") events.sort((a, b) => a.price - b.price);
     if (sort === "price-desc") events.sort((a, b) => b.price - a.price);
