@@ -60,4 +60,25 @@ export async function registerUser({ name, email, password }) {
     localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(safeUser));
 
     return { user: safeUser, token };
+
+    
+}
+export async function loginUser({ email, password }) {
+    await delay(700);
+
+    const users = getUserRegistry();
+    const user = users.find(
+        (u) => u.email.toLowerCase() === email.toLowerCase() && u.password === password
+    );
+
+    if (!user) {
+        throw new Error("Invalid email or password. Please try again.");
+    }
+
+    const token = generateFakeJWT(user);
+    const safeUser = sanitiseUser(user);
+    localStorage.setItem(STORAGE_KEYS.TOKEN, token);
+    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(safeUser));
+
+    return { user: safeUser, token };
 }
