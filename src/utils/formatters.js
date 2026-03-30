@@ -28,14 +28,25 @@ export function isUpcoming(dateStr) {
     return new Date(dateStr) >= new Date();
 }
 
+export function formatPrice(price) {
+    if (price === 0 || price === "0") return "Free";
+    return `€${Number(price).toFixed(2)}`;
+}
 
-export function formatTime(timeStr) {
-    if (!timeStr) return "";
-    const [h, m] = timeStr.split(":");
-    const hour = parseInt(h, 10);
-    const ampm = hour >= 12 ? "PM" : "AM";
-    const displayHour = hour % 12 || 12;
-    return `${displayHour}:${m} ${ampm}`;
+export function getAvailability(capacity, attendees) {
+    const remaining = capacity - attendees;
+    if (remaining <= 0) return { label: "Sold Out", pct: 100, color: "#ef4444" };
+    if (remaining <= 10) return { label: `${remaining} left!`, pct: Math.round((attendees / capacity) * 100), color: "#f59e0b" };
+    return { label: `${remaining} spots left`, pct: Math.round((attendees / capacity) * 100), color: "#10b981" };
+}
+
+export function truncate(str, len = 120) {
+    if (!str) return "";
+    return str.length > len ? str.slice(0, len).trim() + "…" : str;
+}
+
+export function slugify(str) {
+    return str.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, "");
 }
 
 export function generateId(prefix = "id") {
