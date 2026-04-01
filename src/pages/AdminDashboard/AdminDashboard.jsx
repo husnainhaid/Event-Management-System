@@ -21,4 +21,54 @@ function AdminDashboard() {
     const [expandedEventId, setExpandedEventId] = useState(null);
     const [attendees, setAttendees] = useState([]); 
     const [attendeesLoading, setAttendeesLoading] = useState(false);
+
+     const load = async () => {
+        setLoading(true);
+        try {
+            const [s, evts] = await Promise.all([
+                getEventStats(),
+                getUserEvents(user.id),
+            ]);
+            setStats(s);
+            setEvents(evts);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => { load(); }, [user.id]); 
+
+    const handleDelete = async (id) => {
+        if (!window.confirm("Are you sure you want to delete this event?")) return;
+        try {
+            await deleteEvent(id, user.id);
+            setAlert({ type: "success", message: "Event deleted successfully." });
+            if (expandedEventId === id) setExpandedEventId(null);
+            await load();
+        } catch (err) {
+            setAlert({ type: "error", message: err.message });
+        }
+    };
+
+    const handleToggleAttendees = async (eventId) => {
+        
+        if (expandedEventId === eventId) {
+            setExpandedEventId(null);
+            setAttendees([]);
+            return;
+        }
+        setExpandedEventId(eventId);
+        setAttendeesLoading(true);
+        try {
+            const data = await getEventAttendees(eventId);
+            setAttendees(data);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setAttendeesLoading(false);
+        }
+    };
+
 }

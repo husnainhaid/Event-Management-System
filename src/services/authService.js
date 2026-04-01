@@ -101,4 +101,21 @@ export function getToken() {
 export function isAuthenticated() {
     return !!getToken() && !!getCurrentUser();
 }
+function sanitiseUser(user) {
+    const { password, ...safe } = user; // eslint-disable-line no-unused-vars
+    return safe;
+}
+
+function generateFakeJWT(user) {
+    
+    const header = btoa(JSON.stringify({ alg: "HS256", typ: "JWT" }));
+    const payload = btoa(JSON.stringify({ sub: user.id, email: user.email, role: user.role, iat: Date.now() }));
+    const sig = btoa("eventpro-secret-signature"); 
+    return `${header}.${payload}.${sig}`;
+}
+
+function delay(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 
