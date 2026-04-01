@@ -31,3 +31,32 @@ export function validatePositiveNumber(val, fieldName = "Value") {
     if (isNaN(n) || n < 0) return `${fieldName} must be a positive number`;
     return null;
 }
+export function validateEventForm(data) {
+    const errors = {};
+    const r = (v, n) => validateRequired(v, n);
+    if (r(data.title, "Title")) errors.title = r(data.title, "Title");
+    if (r(data.description, "Description")) errors.description = r(data.description, "Description");
+    if (r(data.location, "Location")) errors.location = r(data.location, "Location");
+    if (r(data.category, "Category")) errors.category = r(data.category, "Category");
+    const dateErr = validateFutureDate(data.date);
+    if (dateErr) errors.date = dateErr;
+    if (r(data.time, "Time")) errors.time = r(data.time, "Time");
+    const capErr = validatePositiveNumber(data.capacity, "Capacity");
+    if (capErr) errors.capacity = capErr;
+    if (!data.capacity || Number(data.capacity) < 1) errors.capacity = "Capacity must be at least 1";
+    return errors;
+}
+
+export function getPasswordStrength(password) {
+    let score = 0;
+    if (!password) return { score: 0, label: "", color: "" };
+    if (password.length >= 8) score++;
+    if (password.length >= 12) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[^A-Za-z0-9]/.test(password)) score++;
+    if (score <= 1) return { score, label: "Weak", color: "#ef4444" };
+    if (score <= 3) return { score, label: "Fair", color: "#f59e0b" };
+    if (score === 4) return { score, label: "Strong", color: "#10b981" };
+    return { score, label: "Very Strong", color: "#06b6d4" };
+}
