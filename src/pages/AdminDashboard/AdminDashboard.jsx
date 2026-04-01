@@ -70,5 +70,14 @@ function AdminDashboard() {
             setAttendeesLoading(false);
         }
     };
+    const statCards = stats
+        ? [
+            { label: "Total Events", value: stats.totalEvents, emoji: "🎪", color: "var(--primary-light)" },
+            { label: "Total Attendees", value: stats.totalAttendees.toLocaleString(), emoji: "👥", color: "var(--accent)" },
+            { label: "Upcoming", value: stats.upcomingEvents, emoji: "📅", color: "#10b981" },
+            { label: "Free Events", value: stats.freeEvents, emoji: "🎉", color: "#f59e0b" },
+            { label: "Categories", value: stats.categories, emoji: "🗂️", color: "#8b5cf6" },
+        ]
+        : [];
 
 }
