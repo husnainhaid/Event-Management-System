@@ -105,3 +105,21 @@ export async function deleteEvent(id, userId) {
     saveEvents(updated);
     return true;
 }
+
+export async function getEventStats() {
+    await delay(300);
+    const events = loadEvents();
+    const totalEvents = events.length;
+    const totalAttendees = events.reduce((sum, e) => sum + (e.attendees || 0), 0);
+    const upcomingEvents = events.filter((e) => new Date(e.date) >= new Date()).length;
+    const freeEvents = events.filter((e) => e.price === 0).length;
+    const categories = [...new Set(events.map((e) => e.category))].length;
+    return { totalEvents, totalAttendees, upcomingEvents, freeEvents, categories };
+}
+
+export async function getUserEvents(userId) {
+    await delay(350);
+    const events = loadEvents();
+    return events.filter((e) => e.organizerId === userId);
+}
+
