@@ -81,3 +81,27 @@ export async function createEvent(data, userId) {
     saveEvents(events);
     return newEvent;
 }
+
+export async function updateEvent(id, data, userId) {
+    await delay(500);
+    const events = loadEvents();
+    const idx = events.findIndex((e) => e.id === id);
+    if (idx === -1) throw new Error("Event not found");
+    if (events[idx].organizerId !== userId) throw new Error("Not authorised to edit this event");
+
+    events[idx] = { ...events[idx], ...data, price: Number(data.price), capacity: Number(data.capacity) };
+    saveEvents(events);
+    return events[idx];
+}
+
+export async function deleteEvent(id, userId) {
+    await delay(400);
+    const events = loadEvents();
+    const event = events.find((e) => e.id === id);
+    if (!event) throw new Error("Event not found");
+    if (event.organizerId !== userId) throw new Error("Not authorised to delete this event");
+
+    const updated = events.filter((e) => e.id !== id);
+    saveEvents(updated);
+    return true;
+}
