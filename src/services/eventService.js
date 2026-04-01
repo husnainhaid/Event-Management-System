@@ -50,4 +50,34 @@ export async function getEvents({ search = "", category = "all", sort = "date" }
     if (sort === "popular") events.sort((a, b) => b.attendees - a.attendees);
 
     return events;
+
+    
+}
+
+export async function getEventById(id) {
+    await delay(300);
+    const events = loadEvents();
+    const event = events.find((e) => e.id === id);
+    if (!event) throw new Error("Event not found");
+    return event;
+}
+
+export async function createEvent(data, userId) {
+    await delay(600);
+    const events = loadEvents();
+    const newEvent = {
+        ...data,
+        id: generateId("evt"),
+        attendees: 0,
+        organizerId: userId,
+        isFeatured: false,
+        createdAt: new Date().toISOString(),
+        price: Number(data.price) || 0,
+        capacity: Number(data.capacity) || 50,
+        lat: 53.3498,
+        lng: -6.2603,
+    };
+    events.push(newEvent);
+    saveEvents(events);
+    return newEvent;
 }
