@@ -79,5 +79,12 @@ function AdminDashboard() {
             { label: "Categories", value: stats.categories, emoji: "🗂️", color: "#8b5cf6" },
         ]
         : [];
+        return(
+                  <div className="dashboard page">
+                    
+                  </div>
+
+
+        );
 
 }
