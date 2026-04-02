@@ -19,6 +19,15 @@ export function formatDateShort(dateStr) {
     });
 }
 
+export function formatTime(timeStr) {
+    if (!timeStr) return "";
+    const [h, m] = timeStr.split(":");
+    const hour = parseInt(h, 10);
+    const ampm = hour >= 12 ? "PM" : "AM";
+    const displayHour = hour % 12 || 12;
+    return `${displayHour}:${m} ${ampm}`;
+}
+
 export function formatDateTime(dateStr, timeStr) {
     return `${formatDate(dateStr)} at ${formatTime(timeStr)}`;
 }
