@@ -39,3 +39,35 @@ function Field({ label, name, type = "text", placeholder = "", min, step, form, 
     );
 }
 
+function EventForm({ initialData = {}, onSubmit, loading = false }) {
+    const [form, setForm] = useState({ ...EMPTY_FORM, ...initialData });
+    const [errors, setErrors] = useState({});
+    const [submitError, setSubmitError] = useState("");
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setForm((prev) => ({ ...prev, [name]: value }));
+       
+        if (errors[name]) setErrors((prev) => ({ ...prev, [name]: null }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setSubmitError("");
+        const errs = validateEventForm(form);
+        if (Object.keys(errs).length > 0) {
+            setErrors(errs);
+            return;
+        }
+        try {
+            await onSubmit({
+                ...form,
+                price: Number(form.price) || 0,
+                capacity: Number(form.capacity) || 50,
+                tags: form.tags ? form.tags.split(",").map((t) => t.trim()) : [],
+            });
+        } catch (err) {
+            setSubmitError(err.message || "Something went wrong. Please try again.");
+        }
+    };
+}
