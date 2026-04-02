@@ -1,0 +1,115 @@
+
+
+.events-page__header {
+    margin-bottom: 8px;
+}
+
+/* ── Filter ── */
+.event-filter {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px 24px;
+    margin-bottom: 36px;
+}
+
+.event-filter__search {
+    position: relative;
+}
+
+.event-filter__search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1rem;
+    pointer-events: none;
+}
+
+.event-filter__search input {
+    padding-left: 42px;
+}
+
+.event-filter__categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.event-filter__chip {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: "Inter", sans-serif;
+    white-space: nowrap;
+}
+
+.event-filter__chip:hover,
+.event-filter__chip.active {
+    background: rgba(79, 70, 229, 0.2);
+    border-color: rgba(79, 70, 229, 0.5);
+    color: var(--primary-light);
+}
+
+.event-filter__sort {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.event-filter__sort label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.event-filter__sort select {
+    width: auto;
+    min-width: 180px;
+}
+
+
+.events-page__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+
+.events-page__empty {
+    text-align: center;
+    padding: 80px 24px;
+    color: var(--text-muted);
+}
+
+.events-page__empty-icon {
+    font-size: 4rem;
+    margin-bottom: 16px;
+}
+
+.events-page__empty h3 {
+    font-size: 1.4rem;
+    color: var(--text);
+    margin-bottom: 8px;
+}
+
+@media (max-width: 600px) {
+    .event-filter__sort {
+        flex-wrap: wrap;
+    }
+
+    .event-filter__sort select {
+        min-width: 100%;
+        width: 100%;
+    }
+}

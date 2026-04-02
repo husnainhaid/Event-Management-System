@@ -35,6 +35,9 @@ function Footer() {
                 </div>
 
              </div>
+              <div className="footer__bottom">
+                <p>© {currentYear} EventPro. Built for B9IS130 — Web Development for Information Systems.</p>
+            </div>
          </footer>
     );
 

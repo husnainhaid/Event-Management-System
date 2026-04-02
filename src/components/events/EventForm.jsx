@@ -3,6 +3,8 @@ import Alert from "../common/Alert";
 import { CATEGORIES } from "../../utils/constants";
 import { validateEventForm } from "../../utils/validators";
 
+
+
 const EMPTY_FORM = {
     title: "",
     description: "",
@@ -149,3 +151,5 @@ function EventForm({ initialData = {}, onSubmit, loading = false }) {
         </form>
     );
 }
+
+export default EventForm;

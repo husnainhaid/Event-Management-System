@@ -131,34 +131,7 @@ function Navbar() {
 
 
             </div>
-             <div className={`navbar__mobile ${menuOpen ? "navbar__mobile--open" : ""}`}>
-                <NavLink to="/" className="navbar__mobile-link" onClick={closeMenu} end>Home</NavLink>
-                <NavLink to="/events" className="navbar__mobile-link" onClick={closeMenu}>Browse Events</NavLink>
-                {isAuthenticated ? (
-                    <>
-                        {user?.role === "admin" && (
-                            <NavLink to="/create" className="navbar__mobile-link" onClick={closeMenu}>+ Create Event</NavLink>
-                        )}
-                        <NavLink to="/bookings" className="navbar__mobile-link" onClick={closeMenu}>My Bookings</NavLink>
-                        {user?.role === "admin" && (
-                            <NavLink to="/dashboard" className="navbar__mobile-link" onClick={closeMenu}>Dashboard</NavLink>
-                        )}
-                        <hr className="navbar__mobile-divider" />
-                        <div className="navbar__mobile-user">
-                            <img src={user?.avatar} alt={user?.name} className="navbar__avatar" />
-                            <span>{user?.name}</span>
-                        </div>
-                        <button className="navbar__mobile-link navbar__mobile-logout" onClick={handleLogout}>
-                            🚪 Log Out
-                        </button>
-                    </>
-                ) : (
-                    <div className="navbar__mobile-auth">
-                        <Link to="/login" className="btn btn-outline" onClick={closeMenu}>Log In</Link>
-                        <Link to="/register" className="btn btn-primary" onClick={closeMenu}>Sign Up</Link>
-                    </div>
-                )}
-            </div>
+           
 
         </header>
 
