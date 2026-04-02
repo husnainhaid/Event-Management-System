@@ -1,0 +1,130 @@
+.bookings-page__empty {
+    text-align: center;
+    padding: 80px 24px;
+    color: var(--text-muted);
+}
+
+.bookings-page__empty h3 {
+    font-size: 1.4rem;
+    color: var(--text);
+    margin-bottom: 8px;
+}
+
+.bookings-page__section {
+    margin-bottom: 40px;
+}
+
+.bookings-page__section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--text);
+}
+
+.bookings-page__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* ── Booking Card ── */
+.booking-card {
+    padding: 0;
+    overflow: hidden;
+    transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.booking-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow);
+}
+
+.booking-card--cancelled {
+    opacity: 0.6;
+}
+
+.booking-card__img-wrap {
+    position: relative;
+    height: 160px;
+}
+
+.booking-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.booking-card__status {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.booking-card__status.upcoming {
+    background: rgba(16, 185, 129, 0.2);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    color: #10b981;
+}
+
+.booking-card__status.cancelled {
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #ef4444;
+}
+
+.booking-card__status.past {
+    background: rgba(148, 163, 184, 0.2);
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    color: var(--text-muted);
+}
+
+.booking-card__body {
+    padding: 18px;
+}
+
+.booking-card__title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.booking-card__title a {
+    color: var(--text);
+}
+
+.booking-card__title a:hover {
+    color: var(--primary-light);
+}
+
+.booking-card__meta {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+
+.booking-card__actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.booking-card__cancel-btn {
+    background: transparent;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: var(--danger);
+    border-radius: var(--radius);
+    padding: 8px 16px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: "Inter", sans-serif;
+    transition: background 0.2s;
+}
+
+.booking-card__cancel-btn:hover {
+    background: rgba(239, 68, 68, 0.1);
+}

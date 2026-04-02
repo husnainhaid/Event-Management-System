@@ -41,10 +41,11 @@ useEffect(() => {
     ];
       
     return (
-           <div className="home">
-               <section className="hero">
-                 <div className="hero__bg" />    
-                  <div className="hero__content">
+        <div className="home">
+         
+            <section className="hero">
+                <div className="hero__bg" />
+                <div className="hero__content">
                     <span className="hero__tag">🇮🇪 Ireland's Event Platform</span>
                     <h1 className="hero__title">
                         Discover &amp; Create<br />
@@ -63,7 +64,6 @@ useEffect(() => {
                         </Link>
                     </div>
 
-                    
                     {weather && (
                         <div className="hero__weather">
                             <span className="hero__weather-icon">{weather.icon}</span>
@@ -77,13 +77,91 @@ useEffect(() => {
                             </div>
                         </div>
                     )}
-                </div> 
-               </section>
+                </div>
+
+            
+                <div className="hero__orb hero__orb--1" />
+                <div className="hero__orb hero__orb--2" />
+                <div className="hero__orb hero__orb--3" />
+            </section>
+
+            
+            <section className="home__stats">
+                {stats.map((s) => (
+                    <div key={s.label} className="home__stat-card">
+                        <span className="home__stat-emoji">{s.emoji}</span>
+                        <p className="home__stat-value">{s.value}</p>
+                        <p className="home__stat-label">{s.label}</p>
+                    </div>
+                ))}
+            </section>
+
            
-           </div>
+            <section className="home__section page">
+                <div className="home__section-header">
+                    <div>
+                        <h2 className="section-title">⭐ Featured Events</h2>
+                        <p className="section-sub">Hand-picked events happening near you</p>
+                    </div>
+                    <Link to="/events" className="btn btn-outline">View All →</Link>
+                </div>
 
-      );
+                {loading ? (
+                    <Loader fullScreen message="Loading events…" />
+                ) : (
+                    <div className="home__grid">
+                        {featured.map((evt) => (
+                            <EventCard key={evt.id} event={evt} />
+                        ))}
+                    </div>
+                )}
+            </section>
 
-}
+          
+            {tmEvents.length > 0 && (
+                <section className="home__section home__tm page">
+                    <div className="home__section-header">
+                        <div>
+                            <h2 className="section-title">🎟️ Live Events Near Dublin</h2>
+                            <p className="section-sub">Powered by Ticketmaster Discovery API</p>
+                        </div>
+                    </div>
+                    <div className="home__tm-grid">
+                        {tmEvents.map((ev) => (
+                            <a
+                                key={ev.id}
+                                href={ev.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="home__tm-card"
+                            >
+                                {ev.image && (
+                                    <img src={ev.image} alt={ev.name} className="home__tm-img" loading="lazy" />
+                                )}
+                                <div className="home__tm-body">
+                                    <p className="home__tm-name">{ev.name}</p>
+                                    <p className="home__tm-meta">📅 {ev.date} · {ev.venue}</p>
+                                    <p className="home__tm-price badge badge-accent">{ev.priceRange}</p>
+                                </div>
+                            </a>
+                        ))}
+                    </div>
+                </section>
+            )}
+
+           
+            <section className="home__cta">
+                <div className="home__cta-inner">
+                    <h2>Ready to host your own event?</h2>
+                    <p>Create, manage, and promote your event for free — it only takes a minute.</p>
+                    <Link to="/register" className="btn btn-primary">
+                        🚀 Create Your Event
+                    </Link>
+                </div>
+            </section>
+        </div>
+    );
+    }
+
 
 export default Home;
