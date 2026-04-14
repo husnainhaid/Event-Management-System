@@ -132,3 +132,36 @@
     font-size: 0.78rem;
     margin-top: 4px;
 }
+
+
+
+.auth-role-selector {
+    display: flex;
+    gap: 8px;
+    padding: 20px 32px 0;
+}
+
+.auth-role-btn {
+    flex: 1;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid #e5e7eb;   
+    background: transparent;
+    color: #6b7280;
+    transition: all 0.2s;
+}
+
+.auth-role-btn--active {        
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background: rgba(99, 102, 241, 0.06);
+}
+
+.auth-role-btn--host-active {  
+    border-color: #db2777;
+    color: #db2777;
+    background: rgba(219, 39, 119, 0.06);
+}

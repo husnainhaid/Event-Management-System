@@ -41,9 +41,26 @@ function Login() {
     return (
         <div className="auth-page">
             <div className="auth-card card">
-                {/* Decorative top bar */}
-                <div className="auth-card__top" />
-
+               <div className={`auth-card__top ${role === "host" ? "auth-card__top--host" : ""}`} />
+               <div className="auth-role-selector">
+                     <button
+                        type="button"
+                        id="role-attendee"
+                        className={`auth-role-btn ${role === "attendee" ? "auth-role-btn--active" : ""}`}
+                        onClick={() => { setRole("attendee"); setError(""); }}
+                    >
+                        Attendee Login
+                    </button>
+                    <button
+                        type="button"
+                        id="role-host"
+                        className={`auth-role-btn auth-role-btn--host ${role === "host" ? "auth-role-btn--active auth-role-btn--host-active" : ""}`}
+                        onClick={() => { setRole("host"); setError(""); }}
+                    >
+                        Host Login
+                    </button>
+                
+               </div>
                 <div className="auth-card__header">
                     <span className="auth-card__icon">⚡</span>
                     <h1 className="auth-card__title">Welcome back</h1>
