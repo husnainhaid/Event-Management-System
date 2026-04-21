@@ -11,6 +11,7 @@ function Login() {
     const location = useLocation();
     const from = location.state?.from?.pathname || "/";
 
+    const [role, setRole] = useState("attendee");
     const [form, setForm] = useState({ email: "", password: "" });
     const [showPass, setShowPass] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -23,14 +24,28 @@ function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         const emailErr = validateEmail(form.email);
-        if (emailErr) { setError(emailErr); return; }
-        if (!form.password) { setError("Password is required"); return; }
+        if (emailErr) {
+            setError(emailErr);
+            return;
+        }
+
+        if (!form.password) {
+            setError("Password is required");
+            return;
+        }
 
         setLoading(true);
         try {
-            await login(form.email, form.password);
-            navigate(from, { replace: true });
+            const loggedInUser = await login(form.email, form.password, role);
+
+            if (role === "host" && loggedInUser.role === "host") {
+                navigate("/dashboard", { replace: true });
+            } else {
+                navigate(from, { replace: true });
+            }
+
         } catch (err) {
             setError(err.message || "Login failed. Please try again.");
         } finally {
@@ -41,30 +56,42 @@ function Login() {
     return (
         <div className="auth-page">
             <div className="auth-card card">
-               <div className={`auth-card__top ${role === "host" ? "auth-card__top--host" : ""}`} />
-               <div className="auth-role-selector">
-                     <button
+                <div className={`auth-card__top ${role === "host" ? "auth-card__top--host" : ""}`} />
+
+                <div className="auth-role-selector">
+                    <button
                         type="button"
                         id="role-attendee"
                         className={`auth-role-btn ${role === "attendee" ? "auth-role-btn--active" : ""}`}
-                        onClick={() => { setRole("attendee"); setError(""); }}
+                        onClick={() => {
+                            setRole("attendee");
+                            setError("");
+                        }}
                     >
                         Attendee Login
                     </button>
+
                     <button
                         type="button"
                         id="role-host"
                         className={`auth-role-btn auth-role-btn--host ${role === "host" ? "auth-role-btn--active auth-role-btn--host-active" : ""}`}
-                        onClick={() => { setRole("host"); setError(""); }}
+                        onClick={() => {
+                            setRole("host");
+                            setError("");
+                        }}
                     >
                         Host Login
                     </button>
-                
-               </div>
+                </div>
+
                 <div className="auth-card__header">
                     <span className="auth-card__icon">⚡</span>
                     <h1 className="auth-card__title">Welcome back</h1>
-                    <p className="auth-card__sub">Log in to your EventPro account</p>
+                    <p className="auth-card__sub">
+                        {role === "host"
+                            ? "Log in to manage your events and dashboard"
+                            : "Log in to your EventPro account"}
+                    </p>
                 </div>
 
                 {error && <Alert type="error" message={error} onClose={() => setError("")} />}
@@ -106,21 +133,22 @@ function Login() {
                         </div>
                     </div>
 
-                    <button type="submit" className="btn btn-primary" style={{ width: "100%" }} disabled={loading}>
-                        {loading ? "Logging in…" : "Log In →"}
+                    <button
+                        type="submit"
+                        className="btn btn-primary"
+                        style={{ width: "100%" }}
+                        disabled={loading}
+                    >
+                        {loading ? "Logging in…" : role === "host" ? "Log In as Host →" : "Log In →"}
                     </button>
                 </form>
 
-              
                 <div className="auth-card__demo">
                     <p>🧪 <strong>Demo:</strong> Register any account to get started</p>
                 </div>
 
                 <p className="auth-card__switch">
-                    Don't have an account?{" "}
-                    <Link to="/register">
-                        Sign up free
-                    </Link>
+                    Don't have an account? <Link to="/register">Sign up free</Link>
                 </p>
             </div>
         </div>

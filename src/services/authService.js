@@ -11,7 +11,7 @@ function seedDemoUser() {
             name: "Demo User",
             email: "demo@eventpro.com",
             password: "Demo1234",
-            role: "admin",
+            role: "host",
             avatar: "https://ui-avatars.com/api/?name=Demo+User&background=4f46e5&color=fff&size=128",
             createdAt: "2026-01-01T00:00:00Z",
         });
@@ -31,8 +31,8 @@ function saveUserRegistry(users) {
     localStorage.setItem("ep_user_registry", JSON.stringify(users));
 }
 
-export async function registerUser({ name, email, password }) {
-    await delay(600); 
+export async function registerUser({ name, email, password, role }) {
+    await delay(600);
 
     const users = getUserRegistry();
     const existing = users.find((u) => u.email.toLowerCase() === email.toLowerCase());
@@ -44,8 +44,8 @@ export async function registerUser({ name, email, password }) {
         id: generateId("user"),
         name,
         email: email.toLowerCase(),
-        password, 
-        role: "attendee",
+        password,
+        role,
         avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=4f46e5&color=fff&size=128`,
         createdAt: new Date().toISOString(),
     };
@@ -53,17 +53,15 @@ export async function registerUser({ name, email, password }) {
     users.push(newUser);
     saveUserRegistry(users);
 
-    
     const token = generateFakeJWT(newUser);
     const safeUser = sanitiseUser(newUser);
     localStorage.setItem(STORAGE_KEYS.TOKEN, token);
     localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(safeUser));
 
     return { user: safeUser, token };
-
-    
 }
-export async function loginUser({ email, password }) {
+
+export async function loginUser({ email, password, role = "attendee" }) {
     await delay(700);
 
     const users = getUserRegistry();
@@ -75,6 +73,14 @@ export async function loginUser({ email, password }) {
         throw new Error("Invalid email or password. Please try again.");
     }
 
+    if (role === "host" && user.role !== "host") {
+        throw new Error("This account is not registered as a host.");
+    }
+
+    if (role === "attendee" && user.role !== "attendee") {
+        throw new Error("Please use Host Login for this account.");
+    }
+
     const token = generateFakeJWT(user);
     const safeUser = sanitiseUser(user);
     localStorage.setItem(STORAGE_KEYS.TOKEN, token);
@@ -82,6 +88,7 @@ export async function loginUser({ email, password }) {
 
     return { user: safeUser, token };
 }
+
 export function logoutUser() {
     localStorage.removeItem(STORAGE_KEYS.TOKEN);
     localStorage.removeItem(STORAGE_KEYS.USER);
@@ -107,10 +114,10 @@ function sanitiseUser(user) {
 }
 
 function generateFakeJWT(user) {
-    
+
     const header = btoa(JSON.stringify({ alg: "HS256", typ: "JWT" }));
     const payload = btoa(JSON.stringify({ sub: user.id, email: user.email, role: user.role, iat: Date.now() }));
-    const sig = btoa("eventpro-secret-signature"); 
+    const sig = btoa("eventpro-secret-signature");
     return `${header}.${payload}.${sig}`;
 }
 

@@ -57,6 +57,7 @@
 /* Password field with toggle */
 .auth-form__pass-wrap {
     position: relative;
+    padding-bottom: 10px;
 }
 
 .auth-form__pass-wrap input {

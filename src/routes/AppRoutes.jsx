@@ -16,7 +16,7 @@ import Register from "../pages/Register/Register";
 import NotFound from "../pages/NotFound/NotFound";
 
 import ProtectedRoute from "../components/common/ProtectedRoute";
-import AdminRoute from "../components/common/AdminRoute"; 
+import HostRoute from "../components/common/HostRoute";
 
 function AppRoutes() {
   return (
@@ -24,19 +24,18 @@ function AppRoutes() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-       <Route path="/events" element={<Events />} />
+        <Route path="/events" element={<Events />} />
         <Route path="/events/:id" element={<EventDetails />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} /> 
+        <Route path="/register" element={<Register />} />
 
-         <Route path="/bookings" element={<ProtectedRoute><MyBookings /></ProtectedRoute>} />
+        <Route path="/bookings" element={<ProtectedRoute><MyBookings /></ProtectedRoute>} />
 
+        <Route path="/create" element={<HostRoute><CreateEvent /></HostRoute>} />
+        <Route path="/edit/:id" element={<HostRoute><EditEvent /></HostRoute>} />
+        <Route path="/dashboard" element={<HostRoute><AdminDashboard /></HostRoute>} />
 
-          <Route path="/create" element={<AdminRoute><CreateEvent /></AdminRoute>} />
-          <Route path="/edit/:id" element={<AdminRoute><EditEvent /></AdminRoute>} />
-          <Route path="/dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>}/>
-
-          <Route path="*" element={<NotFound />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
     </>
