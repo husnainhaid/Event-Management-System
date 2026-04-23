@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { getUserEvents } from "../../services/eventService";
-import EventCard from "../../components/events/EventCard";
-import Loader from "../../components/common/Loader";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import "../Events/Events.css"; 
+import { getUserEvents, deleteEvent } from "../../services/eventService";
+import EventCard from "../../components/events/EventCard";
+import Loader from "../../components/common/Loader";
+import Alert from "../../components/common/Alert";
+import "../Events/Events.css";
+import "./MyEvents.css";
 
 function MyEvents() {
     const { user } = useAuth();
@@ -12,6 +14,8 @@ function MyEvents() {
 
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [alert, setAlert] = useState(null);
+    const [deletingId, setDeletingId] = useState(null);
 
     const fetchEvents = useCallback(async () => {
         setLoading(true);
@@ -19,7 +23,10 @@ function MyEvents() {
             const data = await getUserEvents();
             setEvents(data);
         } catch (err) {
-            console.error(err);
+            setAlert({
+                type: "error",
+                message: err.response?.data?.message || err.message || "Failed to load your events.",
+            });
         } finally {
             setLoading(false);
         }
@@ -34,6 +41,32 @@ function MyEvents() {
         fetchEvents();
     }, [user, navigate, fetchEvents]);
 
+    const handleEdit = (eventId) => {
+        navigate(`/edit/${eventId}`);
+    };
+
+    const handleDelete = async (eventId) => {
+        const confirmed = window.confirm("Are you sure you want to delete this event?");
+        if (!confirmed) return;
+
+        setDeletingId(eventId);
+        try {
+            await deleteEvent(eventId);
+            setEvents((prev) => prev.filter((evt) => evt._id !== eventId));
+            setAlert({
+                type: "success",
+                message: "Event deleted successfully.",
+            });
+        } catch (err) {
+            setAlert({
+                type: "error",
+                message: err.response?.data?.message || err.message || "Failed to delete event.",
+            });
+        } finally {
+            setDeletingId(null);
+        }
+    };
+
     return (
         <div className="events-page page">
             <div className="events-page__header">
@@ -42,6 +75,14 @@ function MyEvents() {
                     You have created {events.length} event{events.length !== 1 ? "s" : ""}
                 </p>
             </div>
+
+            {alert && (
+                <Alert
+                    type={alert.type}
+                    message={alert.message}
+                    onClose={() => setAlert(null)}
+                />
+            )}
 
             {loading ? (
                 <Loader fullScreen message="Loading your events…" />
@@ -60,11 +101,20 @@ function MyEvents() {
                     </button>
                 </div>
             ) : (
+
                 <div className="events-page__grid">
                     {events.map((evt) => (
-                        <EventCard key={evt._id} event={evt} />
+                        <EventCard
+                            key={evt._id}
+                            event={evt}
+                            showActions
+                            deleting={deletingId === evt._id}
+                            onEdit={handleEdit}
+                            onDelete={handleDelete}
+                        />
                     ))}
                 </div>
+
             )}
         </div>
     );

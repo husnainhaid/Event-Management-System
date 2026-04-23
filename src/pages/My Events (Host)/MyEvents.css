@@ -1,0 +1,35 @@
+.my-events__card-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.my-events__actions {
+    display: flex;
+    gap: 10px;
+}
+
+.my-events__action-btn,
+.my-events__delete-btn {
+    flex: 1;
+}
+
+.my-events__delete-btn {
+    border: 1px solid rgba(239, 68, 68, 0.28);
+    background: rgba(239, 68, 68, 0.08);
+    color: #ef4444;
+    border-radius: var(--radius);
+    height: 42px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.my-events__delete-btn:hover:not(:disabled) {
+    background: rgba(239, 68, 68, 0.14);
+}
+
+.my-events__delete-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

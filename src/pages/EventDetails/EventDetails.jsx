@@ -11,7 +11,7 @@ import { CATEGORIES } from "../../utils/constants";
 import "./EventDetails.css";
 
 function EventDetails() {
-   const { id } = useParams();
+    const { id } = useParams();
     const { user, isAuthenticated } = useAuth();
     const navigate = useNavigate();
 
@@ -22,7 +22,7 @@ function EventDetails() {
     const [weather, setWeather] = useState(null);
     const [alert, setAlert] = useState(null);
     const [bookingLoading, setBookingLoading] = useState(false);
-        
+
     useEffect(() => {
         async function load() {
             try {
@@ -50,7 +50,7 @@ function EventDetails() {
         }
         load();
     }, [id, isAuthenticated, user]);
-    
+
     const handleBook = async () => {
         if (!isAuthenticated) {
             navigate("/login", { state: { from: { pathname: `/events/${id}` } } });
@@ -69,8 +69,8 @@ function EventDetails() {
             setBookingLoading(false);
         }
     };
-    
-    
+
+
     const handleCancel = async () => {
         if (!bookingId) return;
         setBookingLoading(true);
@@ -96,14 +96,20 @@ function EventDetails() {
     const avail = getAvailability(event.capacity, event.attendees);
     const catObj = CATEGORIES.find((c) => c.value === event.category);
     const isSoldOut = avail.label === "Sold Out";
+    const eventHostId =
+        typeof event.host === "object" && event.host !== null
+            ? event.host._id
+            : event.host;
 
-       return (
+    const isEventHost = user?.role === "host" && eventHostId === user?.id;
+
+    return (
         <div className="event-details page">
             {alert && (
                 <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} autoClose={5000} />
             )}
 
-           
+
             <div className="event-details__hero">
                 <img src={event.image || "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=1200&q=80"} alt={event.title} />
                 <div className="event-details__hero-overlay" />
@@ -112,13 +118,15 @@ function EventDetails() {
                         {catObj?.emoji} {catObj?.label}
                     </span>
                     <h1 className="event-details__title">{event.title}</h1>
-                    <p className="event-details__organizer">Organised by {event.organizer}</p>
+                    <p className="event-details__organizer">
+                        Organised by {typeof event.host === "object" ? event.host?.name : "Host"}
+                    </p>
                 </div>
             </div>
 
-            
+
             <div className="event-details__grid">
-                
+
                 <div className="event-details__main">
                     <div className="card">
                         <h2 className="event-details__section-title">About this Event</h2>
@@ -133,30 +141,26 @@ function EventDetails() {
                         )}
                     </div>
 
-                 
+
                     <div className="card event-details__map-wrap">
                         <h2 className="event-details__section-title">📍 Location</h2>
                         <p style={{ color: "var(--text-muted)", marginBottom: 16, fontSize: "0.9rem" }}>
-                            {event.location}, {event.city}, {event.country}
+                            {event.venue}, {event.city}, {event.country}
                         </p>
                         <iframe
                             title="Event location map"
                             className="event-details__map"
-                            src={`https://maps.google.com/maps?q=${encodeURIComponent(event.location + ", " + event.city)}&output=embed`}
+                            src={`https://maps.google.com/maps?q=${encodeURIComponent(event.venue + ", " + event.city + ", " + event.country)}&output=embed`}
                             loading="lazy"
                             referrerPolicy="no-referrer-when-downgrade"
                         />
                     </div>
                 </div>
 
-                
+
                 <aside className="event-details__sidebar">
-                    
+
                     <div className="card event-details__booking-card">
-                        <div className="event-details__price">
-                            <span className="event-details__price-val">{formatPrice(event.price)}</span>
-                            {event.price > 0 && <span style={{ color: "var(--text-muted)", fontSize: "0.85rem" }}>per person</span>}
-                        </div>
 
                         <div className="event-details__info-list">
                             <div className="event-details__info-item">
@@ -168,7 +172,7 @@ function EventDetails() {
                             </div>
                             <div className="event-details__info-item">
                                 <span>📍</span>
-                                <p>{event.location}, {event.city}</p>
+                                <p>{event.venue}, {event.city}</p>
                             </div>
                             <div className="event-details__info-item">
                                 <span>👥</span>
@@ -181,38 +185,14 @@ function EventDetails() {
                             </div>
                         </div>
 
-                        {alreadyBooked ? (
-                            <div>
-                                <div className="event-details__booked-badge">✅ You're registered!</div>
-                                <button
-                                    className="btn btn-outline"
-                                    style={{ width: "100%", marginTop: 12, color: "var(--danger)", borderColor: "var(--danger)" }}
-                                    onClick={handleCancel}
-                                    disabled={bookingLoading}
-                                >
-                                    {bookingLoading ? "Cancelling…" : "Cancel Booking"}
-                                </button>
-                            </div>
-                        ) : (
-                            <button
-                                className="btn btn-primary"
-                                style={{ width: "100%" }}
-                                onClick={handleBook}
-                                disabled={isSoldOut || bookingLoading}
-                            >
-                                {bookingLoading ? "Processing…" : isSoldOut ? "Sold Out" : isAuthenticated ? "🎟️ Book Now" : "🔑 Log In to Book"}
-                            </button>
-                        )}
+                        <div className="event-details__price">
+                            <span className="event-details__price-val">{formatPrice(event.price)}</span>
+                            {event.price > 0 && <span style={{ color: "var(--text-muted)", fontSize: "0.85rem" }}>per person</span>}
+                        </div>
 
-                        {!isAuthenticated && (
-                            <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", textAlign: "center", marginTop: 10 }}>
-                                <Link to="/login" style={{ color: "var(--primary-light)" }}>Log in</Link> or{" "}
-                                <Link to="/register" style={{ color: "var(--primary-light)" }}>register</Link> to book this event
-                            </p>
-                        )}
                     </div>
 
-                   
+
                     {weather && (
                         <div className="card event-details__weather">
                             <h3 style={{ fontSize: "0.95rem", fontWeight: 700, marginBottom: 14 }}>🌤️ Weather at Venue</h3>
@@ -233,7 +213,7 @@ function EventDetails() {
                         </div>
                     )}
 
-                   
+
                     <div className="card">
                         <h3 style={{ fontSize: "0.95rem", fontWeight: 700, marginBottom: 14 }}>📢 Share this Event</h3>
                         <div style={{ display: "flex", gap: 10 }}>
@@ -249,6 +229,34 @@ function EventDetails() {
                     </div>
                 </aside>
             </div>
+            {!isEventHost && (
+                <div className="event-details__cta">
+                    {alreadyBooked ? (
+                        <button
+                            className="btn btn-outline"
+                            onClick={handleCancel}
+                            disabled={bookingLoading}
+                        >
+                            {bookingLoading ? "Cancelling…" : "Cancel Booking"}
+                        </button>
+                    ) : (
+                        <button
+                            className="btn btn-primary"
+                            onClick={handleBook}
+                            disabled={isSoldOut || bookingLoading}
+                        >
+                            {bookingLoading
+                                ? "Processing…"
+                                : isSoldOut
+                                    ? "Sold Out"
+                                    : isAuthenticated
+                                        ? "Book Now"
+                                        : "Log in to Book"}
+                        </button>
+                    )}
+                </div>
+            )}
+
         </div>
     );
 }

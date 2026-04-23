@@ -138,7 +138,7 @@ function Login() {
                         style={{ width: "100%" }}
                         disabled={loading}
                     >
-                        {loading ? "Logging in…" : role === "host" ? "Log In as Host →" : "Log In →"}
+                        {loading ? "Logging in…" : role === "host" ? "Log In as Host" : "Log In"}
                     </button>
                 </form>
 

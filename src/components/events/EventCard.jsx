@@ -1,66 +1,77 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { formatDateShort, formatTime, formatPrice, getAvailability, truncate } from "../../utils/formatters";
-import { CATEGORIES } from "../../utils/constants";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import "./EventCard.css";
 
-function EventCard({ event }) {
-    if (!event) return null;
-   
- const { id, title, description, image, date, time, location, city, category, price, capacity, attendees } = event;
-    const avail = getAvailability(capacity, attendees);
-    const catObj = CATEGORIES.find((c) => c.value === category);
-    const catEmoji = catObj?.emoji || "🎪";
-    const catLabel = catObj?.label || category;
+function EventCard({
+  event,
+  showActions = false,
+  onEdit,
+  onDelete,
+  deleting = false,
+}) {
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
-    return (
-        <Link to={`/events/${id}`} className="event-card" aria-label={`View details for ${title}`}>
-           
-            <div className="event-card__img-wrap">
-                <img
-                    src={image || "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=600&q=80"}
-                    alt={title}
-                    className="event-card__img"
-                    loading="lazy"
-                />
-                <div className="event-card__overlay" />
-               
-                <span className="event-card__cat badge badge-primary">
-                    {catEmoji} {catLabel}
-                </span>
-               
-                <span className={`event-card__price ${price === 0 ? "event-card__price--free" : ""}`}>
-                    {formatPrice(price)}
-                </span>
-            </div>
+  const isHost = user?.role === "host";
 
-          
-            <div className="event-card__body">
-                <h3 className="event-card__title">{title}</h3>
-                <p className="event-card__desc">{truncate(description, 90)}</p>
+  const handleView = () => {
+    navigate(`/events/${event._id}`);
+  };
 
-                <div className="event-card__meta">
-                    <span className="event-card__meta-item">
-                        📅 {formatDateShort(date)} {time && `· ${formatTime(time)}`}
-                    </span>
-                    <span className="event-card__meta-item">📍 {city || location}</span>
-                </div>
+  return (
+    <article className="event-card card">
+      <div className="event-card__media" onClick={handleView}>
+        <img
+          src={
+            event.image ||
+            "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=800&q=60"
+          }
+          alt={event.title}
+          className="event-card__image"
+        />
+      </div>
 
-                
-                <div className="event-card__capacity">
-                    <div className="event-card__capacity-bar">
-                        <div
-                            className="event-card__capacity-fill"
-                            style={{ width: `${Math.min(avail.pct, 100)}%`, background: avail.color }}
-                        />
-                    </div>
-                    <span className="event-card__capacity-label" style={{ color: avail.color }}>
-                        {avail.label}
-                    </span>
-                </div>
-            </div>
-        </Link>
-    );
+      <div className="event-card__body">
+        <div className="event-card__main" onClick={handleView}>
+          <h3 className="event-card__title">{event.title}</h3>
+
+          <p className="event-card__meta">
+            📅 {event.date} • ⏰ {event.time}
+          </p>
+
+          <p className="event-card__meta">
+            📍 {event.venue}, {event.city}
+          </p>
+
+          <p className="event-card__price">
+            {Number(event.price) === 0 ? "Free" : `€${event.price}`}
+          </p>
+        </div>
+
+        {showActions && isHost && (
+          <div className="event-card__actions">
+            <button
+              type="button"
+              className="event-card__action event-card__action--edit"
+              onClick={() => onEdit?.(event._id)}
+            >
+              Edit
+            </button>
+
+            <button
+              type="button"
+              className="event-card__action event-card__action--delete"
+              onClick={() => onDelete?.(event._id)}
+              disabled={deleting}
+            >
+              {deleting ? "Deleting…" : "Delete"}
+            </button>
+          </div>
+        )}
+      </div>
+    </article>
+  );
 }
 
 export default EventCard;
