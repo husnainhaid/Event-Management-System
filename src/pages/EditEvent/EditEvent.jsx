@@ -5,10 +5,10 @@ import { getEventById, updateEvent } from "../../services/eventService";
 import EventForm from "../../components/events/EventForm";
 import Loader from "../../components/common/Loader";
 import Alert from "../../components/common/Alert";
+import "../CreateEvent/CreateEvent.css";
 
 function EditEvent() {
-
- const { id } = useParams();
+    const { id } = useParams();
     const { user } = useAuth();
     const navigate = useNavigate();
 
@@ -16,27 +16,44 @@ function EditEvent() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState("");
-useEffect(() => {
-        getEventById(id)
-            .then((evt) => {
-                
-                if (evt.organizerId !== user?.id) {
+
+    useEffect(() => {
+        const loadEvent = async () => {
+            try {
+                const evt = await getEventById(id);
+
+                const hostId =
+                    typeof evt.host === "object" && evt.host !== null
+                        ? evt.host._id
+                        : evt.host;
+
+                if (hostId !== user?.id) {
                     navigate("/events");
                     return;
                 }
+
                 setEvent(evt);
-            })
-            .catch(() => navigate("/events"))
-            .finally(() => setLoading(false));
+            } catch {
+                navigate("/events");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (user?.id) {
+            loadEvent();
+        }
     }, [id, user, navigate]);
 
     const handleSubmit = async (data) => {
         setSaving(true);
+        setError("");
+
         try {
-            await updateEvent(id, data, user.id);
+            await updateEvent(id, data);
             navigate(`/events/${id}`);
         } catch (err) {
-            setError(err.message);
+            setError(err.response?.data?.message || err.message || "Failed to update event.");
             setSaving(false);
         }
     };
@@ -50,7 +67,9 @@ useEffect(() => {
                 <h1 className="section-title">Edit Event</h1>
                 <p className="section-sub">Update the details for: <strong>{event?.title}</strong></p>
             </div>
+
             {error && <Alert type="error" message={error} onClose={() => setError("")} />}
+
             <div className="create-event__body card">
                 {event && (
                     <EventForm
@@ -65,8 +84,6 @@ useEffect(() => {
             </div>
         </div>
     );
-
-
-
 }
+
 export default EditEvent;

@@ -75,7 +75,7 @@ function Register() {
       });
       navigate("/");
     } catch (err) {
-      setError(err.message || "Registration failed. Please try again.");
+      setError(err.response?.data?.message || "Registration failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -121,7 +121,6 @@ function Register() {
         </div>
 
         <div className="auth-card__header">
-          <span className="auth-card__icon">🚀</span>
           <h1 className="auth-card__title">
             {accountType === "host"
               ? "Create your host account"

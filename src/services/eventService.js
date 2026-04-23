@@ -1,133 +1,98 @@
-import { STORAGE_KEYS, SEED_EVENTS } from "../utils/constants";
-import { generateId } from "../utils/formatters";
+import axios from "axios";
+import { STORAGE_KEYS } from "../utils/constants";
 
-function initEvents() {
-    const existing = localStorage.getItem(STORAGE_KEYS.EVENTS);
-    if (!existing) {
-        localStorage.setItem(STORAGE_KEYS.EVENTS, JSON.stringify(SEED_EVENTS));
-    }
-}
+const API = axios.create({
+  baseURL: "http://localhost:5000/api",
+});
 
-function loadEvents() {
-    initEvents();
-    const raw = localStorage.getItem(STORAGE_KEYS.EVENTS);
-    return raw ? JSON.parse(raw) : [];
-}
+const getAuthConfig = () => {
+  const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
 
-function saveEvents(events) {
-    localStorage.setItem(STORAGE_KEYS.EVENTS, JSON.stringify(events));
-}
-
-function delay(ms = 500) {
-    return new Promise((res) => setTimeout(res, ms));
-}
+  return {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+};
 
 export async function getEvents({ search = "", category = "all", sort = "date" } = {}) {
-    await delay(400);
-    let events = loadEvents();
+  const { data } = await API.get("/events");
+  let events = data.events || [];
 
+  if (category && category !== "all") {
+    events = events.filter((e) => e.category === category);
+  }
 
-    if (category && category !== "all") {
-        events = events.filter((e) => e.category === category);
-    }
+  if (search.trim()) {
+    const q = search.toLowerCase();
+    events = events.filter(
+      (e) =>
+        e.title?.toLowerCase().includes(q) ||
+        e.description?.toLowerCase().includes(q) ||
+        e.venue?.toLowerCase().includes(q) ||
+        e.city?.toLowerCase().includes(q)
+    );
+  }
 
+  if (sort === "date") {
+    events.sort((a, b) => new Date(a.date) - new Date(b.date));
+  }
 
-    if (search.trim()) {
-        const q = search.toLowerCase();
-        events = events.filter(
-            (e) =>
-                e.title.toLowerCase().includes(q) ||
-                e.description.toLowerCase().includes(q) ||
-                e.location.toLowerCase().includes(q) ||
-                e.city.toLowerCase().includes(q)
-        );
-    }
+  if (sort === "price-asc") {
+    events.sort((a, b) => Number(a.price) - Number(b.price));
+  }
 
+  if (sort === "price-desc") {
+    events.sort((a, b) => Number(b.price) - Number(a.price));
+  }
 
-    if (sort === "date") events.sort((a, b) => new Date(a.date) - new Date(b.date));
-    if (sort === "price-asc") events.sort((a, b) => a.price - b.price);
-    if (sort === "price-desc") events.sort((a, b) => b.price - a.price);
-    if (sort === "popular") events.sort((a, b) => b.attendees - a.attendees);
+  if (sort === "popular") {
+    events.sort((a, b) => Number(b.attendees || 0) - Number(a.attendees || 0));
+  }
 
-    return events;
-
-
+  return events;
 }
 
-
-
 export async function getFeaturedEvents() {
-    await delay(400);
-    const events = loadEvents();
-    return events.filter((e) => e.isFeatured).slice(0, 4);
+  const { data } = await API.get("/events");
+  const events = data.events || [];
+  return events.filter((e) => e.isFeatured).slice(0, 4);
 }
 
 export async function getEventById(id) {
-    await delay(300);
-    const events = loadEvents();
-    const event = events.find((e) => e.id === id);
-    if (!event) throw new Error("Event not found");
-    return event;
+  const { data } = await API.get(`/events/${id}`);
+  return data.event;
 }
 
-export async function createEvent(data, userId) {
-    await delay(600);
-    const events = loadEvents();
-    const newEvent = {
-        ...data,
-        id: generateId("evt"),
-        attendees: 0,
-        organizerId: userId,
-        isFeatured: false,
-        createdAt: new Date().toISOString(),
-        price: Number(data.price) || 0,
-        capacity: Number(data.capacity) || 50,
-        lat: 53.3498,
-        lng: -6.2603,
-    };
-    events.push(newEvent);
-    saveEvents(events);
-    return newEvent;
+export async function createEvent(payload) {
+  const { data } = await API.post("/events", payload, getAuthConfig());
+  return data.event;
 }
 
-export async function updateEvent(id, data, userId) {
-    await delay(500);
-    const events = loadEvents();
-    const idx = events.findIndex((e) => e.id === id);
-    if (idx === -1) throw new Error("Event not found");
-    if (events[idx].organizerId !== userId) throw new Error("Not authorised to edit this event");
-
-    events[idx] = { ...events[idx], ...data, price: Number(data.price), capacity: Number(data.capacity) };
-    saveEvents(events);
-    return events[idx];
+export async function updateEvent(id, payload) {
+  const { data } = await API.put(`/events/${id}`, payload, getAuthConfig());
+  return data.event;
 }
 
-export async function deleteEvent(id, userId) {
-    await delay(400);
-    const events = loadEvents();
-    const event = events.find((e) => e.id === id);
-    if (!event) throw new Error("Event not found");
-    if (event.organizerId !== userId) throw new Error("Not authorised to delete this event");
-
-    const updated = events.filter((e) => e.id !== id);
-    saveEvents(updated);
-    return true;
+export async function deleteEvent(id) {
+  const { data } = await API.delete(`/events/${id}`, getAuthConfig());
+  return data;
 }
 
 export async function getEventStats() {
-    await delay(300);
-    const events = loadEvents();
-    const totalEvents = events.length;
-    const totalAttendees = events.reduce((sum, e) => sum + (e.attendees || 0), 0);
-    const upcomingEvents = events.filter((e) => new Date(e.date) >= new Date()).length;
-    const freeEvents = events.filter((e) => e.price === 0).length;
-    const categories = [...new Set(events.map((e) => e.category))].length;
-    return { totalEvents, totalAttendees, upcomingEvents, freeEvents, categories };
+  const { data } = await API.get("/events/my-events", getAuthConfig());
+  const events = data.events || [];
+
+  const totalEvents = events.length;
+  const totalAttendees = events.reduce((sum, e) => sum + (e.attendees || 0), 0);
+  const upcomingEvents = events.filter((e) => new Date(e.date) >= new Date()).length;
+  const freeEvents = events.filter((e) => Number(e.price) === 0).length;
+  const categories = [...new Set(events.map((e) => e.category))].length;
+
+  return { totalEvents, totalAttendees, upcomingEvents, freeEvents, categories };
 }
 
-export async function getUserEvents(userId) {
-    await delay(350);
-    const events = loadEvents();
-    return events.filter((e) => e.organizerId === userId);
+export async function getUserEvents() {
+  const { data } = await API.get("/events/my-events", getAuthConfig());
+  return data.events || [];
 }
-

@@ -10,13 +10,14 @@ import EventDetails from "../pages/EventDetails/EventDetails";
 import CreateEvent from "../pages/CreateEvent/CreateEvent";
 import EditEvent from "../pages/EditEvent/EditEvent";
 import MyBookings from "../pages/MyBookings/MyBookings";
-import AdminDashboard from "../pages/AdminDashboard/AdminDashboard";
+import HostDashboard from "../pages/HostDashboard/HostDashboard";
 import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
 import NotFound from "../pages/NotFound/NotFound";
 
 import ProtectedRoute from "../components/common/ProtectedRoute";
 import HostRoute from "../components/common/HostRoute";
+import MyEvents from "../pages/My Events (Host)/MyEventsPageForHost";
 
 function AppRoutes() {
   return (
@@ -33,7 +34,9 @@ function AppRoutes() {
 
         <Route path="/create" element={<HostRoute><CreateEvent /></HostRoute>} />
         <Route path="/edit/:id" element={<HostRoute><EditEvent /></HostRoute>} />
-        <Route path="/dashboard" element={<HostRoute><AdminDashboard /></HostRoute>} />
+        <Route path="/dashboard" element={<HostRoute><HostDashboard /></HostRoute>} />
+
+        <Route path="/my-events" element={<ProtectedRoute><MyEvents /></ProtectedRoute>} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>

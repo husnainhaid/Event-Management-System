@@ -47,7 +47,7 @@ function Login() {
             }
 
         } catch (err) {
-            setError(err.message || "Login failed. Please try again.");
+            setError(err.response?.data?.message || "Login failed. Please try again.");
         } finally {
             setLoading(false);
         }
@@ -85,7 +85,6 @@ function Login() {
                 </div>
 
                 <div className="auth-card__header">
-                    <span className="auth-card__icon">⚡</span>
                     <h1 className="auth-card__title">Welcome back</h1>
                     <p className="auth-card__sub">
                         {role === "host"

@@ -1,58 +1,62 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { loginUser, registerUser, logoutUser, getCurrentUser, getToken } from "../services/authService";
 
-
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-    const [user, setUser] = useState(null);
-    const [token, setToken] = useState(null);
-    const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const savedUser = getCurrentUser();
+    const savedToken = getToken();
 
-    useEffect(() => {
-        const savedUser = getCurrentUser();
-        const savedToken = getToken();
-        if (savedUser && savedToken) {
-            setUser(savedUser);
-            setToken(savedToken);
-        }
-        setLoading(false);
-    }, []);
+    if (savedUser && savedToken) {
+      setUser(savedUser);
+      setToken(savedToken);
+    }
 
-    const login = useCallback(async (email, password, role) => {
-        const { user: u, token: t } = await loginUser({ email, password, role });
-        setUser(u);
-        setToken(t);
-        return u;
-    }, []);
-    const register = useCallback(async ({ name, email, password, role }) => {
-        const { user: u, token: t } = await registerUser({ name, email, password, role });
-        setUser(u);
-        setToken(t);
-        return u;
-    }, []);
-    const logout = useCallback(() => {
-        logoutUser();
-        setUser(null);
-        setToken(null);
-    }, []);
-    const value = {
-        user,
-        token,
-        loading,
-        isAuthenticated: !!user && !!token,
-        login,
-        register,
-        logout,
-    };
+    setLoading(false);
+  }, []);
 
-    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  const login = useCallback(async (email, password, role) => {
+    const { user: u, token: t } = await loginUser({ email, password, role });
+    setUser(u);
+    setToken(t);
+    return u;
+  }, []);
+
+  const register = useCallback(async ({ name, email, password, role }) => {
+    const { user: u, token: t } = await registerUser({ name, email, password, role });
+    setUser(u);
+    setToken(t);
+    return u;
+  }, []);
+
+  const logout = useCallback(() => {
+    logoutUser();
+    setUser(null);
+    setToken(null);
+  }, []);
+
+  const value = {
+    user,
+    token,
+    loading,
+    isAuthenticated: !!user && !!token,
+    login,
+    register,
+    logout,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
+
 export function useAuth() {
-    const ctx = useContext(AuthContext);
-    if (!ctx) throw new Error("useAuth must be used within an AuthProvider");
-    return ctx;
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be used within an AuthProvider");
+  return ctx;
 }
 
 export default AuthContext;

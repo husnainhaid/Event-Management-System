@@ -6,9 +6,9 @@ import { getEventAttendees } from "../../services/bookingService";
 import Loader from "../../components/common/Loader";
 import Alert from "../../components/common/Alert";
 import { formatDateShort, formatPrice } from "../../utils/formatters";
-import "./AdminDashboard.css";
+import "./HostDashboard.css";
 
-function AdminDashboard() {
+function HostDashboard() {
                     const { user } = useAuth();
     const navigate = useNavigate();
 
@@ -233,4 +233,4 @@ function AdminDashboard() {
     );
 }
 
-export default AdminDashboard;
+export default HostDashboard;

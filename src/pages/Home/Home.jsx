@@ -155,7 +155,7 @@ useEffect(() => {
                     <h2>Ready to host your own event?</h2>
                     <p>Create, manage, and promote your event for free — it only takes a minute.</p>
                     <Link to="/register" className="btn btn-primary">
-                        🚀 Create Your Event
+                        Create Your Event
                     </Link>
                 </div>
             </section>

@@ -3,15 +3,13 @@ import Alert from "../common/Alert";
 import { CATEGORIES } from "../../utils/constants";
 import { validateEventForm } from "../../utils/validators";
 
-
-
 const EMPTY_FORM = {
     title: "",
     description: "",
     category: "",
     date: "",
     time: "",
-    location: "",
+    venue: "",
     city: "",
     country: "Ireland",
     price: 0,
@@ -19,7 +17,6 @@ const EMPTY_FORM = {
     image: "",
     tags: "",
 };
-
 
 function Field({ label, name, type = "text", placeholder = "", min, step, form, errors, onChange }) {
     return (
@@ -29,7 +26,7 @@ function Field({ label, name, type = "text", placeholder = "", min, step, form, 
                 id={name}
                 name={name}
                 type={type}
-                value={form[name]}
+                value={form[name] ?? ""}
                 onChange={onChange}
                 placeholder={placeholder}
                 min={min}
@@ -49,37 +46,55 @@ function EventForm({ initialData = {}, onSubmit, loading = false }) {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setForm((prev) => ({ ...prev, [name]: value }));
-       
-        if (errors[name]) setErrors((prev) => ({ ...prev, [name]: null }));
+        if (errors[name]) {
+            setErrors((prev) => ({ ...prev, [name]: null }));
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSubmitError("");
+
         const errs = validateEventForm(form);
         if (Object.keys(errs).length > 0) {
             setErrors(errs);
             return;
         }
+
         try {
             await onSubmit({
                 ...form,
                 price: Number(form.price) || 0,
                 capacity: Number(form.capacity) || 50,
-                tags: form.tags ? form.tags.split(",").map((t) => t.trim()) : [],
+                tags: form.tags ? form.tags.split(",").map((t) => t.trim()).filter(Boolean) : [],
             });
         } catch (err) {
-            setSubmitError(err.message || "Something went wrong. Please try again.");
+            setSubmitError(
+                err.response?.data?.message || err.message || "Something went wrong. Please try again."
+            );
         }
     };
 
-      return (
+    return (
         <form className="event-form" onSubmit={handleSubmit} noValidate>
-            {submitError && <Alert type="error" message={submitError} onClose={() => setSubmitError("")} />}
+            {submitError && (
+                <Alert
+                    type="error"
+                    message={submitError}
+                    onClose={() => setSubmitError("")}
+                />
+            )}
 
             <div className="event-form__grid">
                 <div className="form-group" style={{ gridColumn: "1 / -1" }}>
-                    <Field label="Event Title *" name="title" placeholder="e.g. Dublin Tech Summit 2026" form={form} errors={errors} onChange={handleChange} />
+                    <Field
+                        label="Event Title *"
+                        name="title"
+                        placeholder="e.g. Dublin Tech Summit 2026"
+                        form={form}
+                        errors={errors}
+                        onChange={handleChange}
+                    />
                 </div>
 
                 <div className="form-group" style={{ gridColumn: "1 / -1" }}>
@@ -98,7 +113,13 @@ function EventForm({ initialData = {}, onSubmit, loading = false }) {
 
                 <div className="form-group">
                     <label htmlFor="category">Category *</label>
-                    <select id="category" name="category" value={form.category} onChange={handleChange} aria-invalid={!!errors.category}>
+                    <select
+                        id="category"
+                        name="category"
+                        value={form.category}
+                        onChange={handleChange}
+                        aria-invalid={!!errors.category}
+                    >
                         <option value="">Select a category…</option>
                         {CATEGORIES.filter((c) => c.value !== "all").map((c) => (
                             <option key={c.value} value={c.value}>
@@ -111,7 +132,7 @@ function EventForm({ initialData = {}, onSubmit, loading = false }) {
 
                 <Field label="Date *" name="date" type="date" form={form} errors={errors} onChange={handleChange} />
                 <Field label="Time *" name="time" type="time" form={form} errors={errors} onChange={handleChange} />
-                <Field label="Venue / Address *" name="location" placeholder="e.g. Convention Centre Dublin" form={form} errors={errors} onChange={handleChange} />
+                <Field label="Venue / Address *" name="venue" placeholder="e.g. Convention Centre Dublin" form={form} errors={errors} onChange={handleChange} />
                 <Field label="City *" name="city" placeholder="e.g. Dublin" form={form} errors={errors} onChange={handleChange} />
                 <Field label="Country" name="country" placeholder="e.g. Ireland" form={form} errors={errors} onChange={handleChange} />
                 <Field label="Price (€)" name="price" type="number" min="0" step="0.01" placeholder="0 for Free" form={form} errors={errors} onChange={handleChange} />
@@ -134,19 +155,34 @@ function EventForm({ initialData = {}, onSubmit, loading = false }) {
             <div className="event-form__preview">
                 {form.image && (
                     <div>
-                        <p style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginBottom: 8 }}>Image Preview</p>
+                        <p style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginBottom: 8 }}>
+                            Image Preview
+                        </p>
                         <img
                             src={form.image}
                             alt="Event preview"
-                            style={{ width: "100%", height: 180, objectFit: "cover", borderRadius: "var(--radius)", border: "1px solid var(--border)" }}
-                            onError={(e) => { e.target.style.display = "none"; }}
+                            style={{
+                                width: "100%",
+                                height: 180,
+                                objectFit: "cover",
+                                borderRadius: "var(--radius)",
+                                border: "1px solid var(--border)",
+                            }}
+                            onError={(e) => {
+                                e.target.style.display = "none";
+                            }}
                         />
                     </div>
                 )}
             </div>
 
-            <button type="submit" className="btn btn-primary" style={{ width: "100%", marginTop: 8 }} disabled={loading}>
-                {loading ? "Saving…" : initialData.id ? "💾 Update Event" : "🚀 Create Event"}
+            <button
+                type="submit"
+                className="btn btn-primary"
+                style={{ width: "100%", marginTop: 8 }}
+                disabled={loading}
+            >
+                {loading ? "Saving…" : (initialData._id || initialData.id) ? "Update Event" : "Create Event"}
             </button>
         </form>
     );

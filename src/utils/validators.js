@@ -34,16 +34,25 @@ export function validatePositiveNumber(val, fieldName = "Value") {
 export function validateEventForm(data) {
     const errors = {};
     const r = (v, n) => validateRequired(v, n);
+
     if (r(data.title, "Title")) errors.title = r(data.title, "Title");
     if (r(data.description, "Description")) errors.description = r(data.description, "Description");
-    if (r(data.location, "Location")) errors.location = r(data.location, "Location");
+    if (r(data.venue, "Venue")) errors.venue = r(data.venue, "Venue"); // ✅ FIXED
     if (r(data.category, "Category")) errors.category = r(data.category, "Category");
+    if (r(data.city, "City")) errors.city = r(data.city, "City");
+
     const dateErr = validateFutureDate(data.date);
     if (dateErr) errors.date = dateErr;
+
     if (r(data.time, "Time")) errors.time = r(data.time, "Time");
+
     const capErr = validatePositiveNumber(data.capacity, "Capacity");
     if (capErr) errors.capacity = capErr;
-    if (!data.capacity || Number(data.capacity) < 1) errors.capacity = "Capacity must be at least 1";
+
+    if (!data.capacity || Number(data.capacity) < 1) {
+        errors.capacity = "Capacity must be at least 1";
+    }
+
     return errors;
 }
 

@@ -45,31 +45,47 @@ function Navbar() {
                     <span className="navbar__logo-icon">⚡</span>
                     <span className="navbar__logo-text">EventPro</span>
                 </Link>
+
                 <nav className="navbar__links">
                     <NavLink to="/" className={({ isActive }) => `navbar__link ${isActive ? "active" : ""}`} end>
                         Home
                     </NavLink>
-                    <NavLink to="/events" className={({ isActive }) => `navbar__link ${isActive ? "active" : ""}`}>
-                        Browse Events
-                    </NavLink>
-                    {isAuthenticated && (
+
+                    {/* Attendee */}
+                    {isAuthenticated && user?.role === "attendee" && (
                         <>
-                            {user?.role === "admin" && (
-                                <NavLink to="/create" className={({ isActive }) => `navbar__link ${isActive ? "active" : ""}`}>
-                                    + Create Event
-                                </NavLink>
-                            )}
+                            <NavLink to="/events" className={({ isActive }) => `navbar__link ${isActive ? "active" : ""}`}>
+                                Browse Events
+                            </NavLink>
                             <NavLink to="/bookings" className={({ isActive }) => `navbar__link ${isActive ? "active" : ""}`}>
                                 My Bookings
                             </NavLink>
-                            {user?.role === "admin" && (
-                                <NavLink to="/dashboard" className={({ isActive }) => `navbar__link ${isActive ? "active" : ""}`}>
-                                    Dashboard
-                                </NavLink>
-                            )}
                         </>
                     )}
+
+                    {/* Host */}
+                    {isAuthenticated && user?.role === "host" && (
+                        <>
+                            <NavLink to="/create" className={({ isActive }) => `navbar__link ${isActive ? "active" : ""}`}>
+                                + Create Event
+                            </NavLink>
+                            <NavLink to="/my-events" className={({ isActive }) => `navbar__link ${isActive ? "active" : ""}`}>
+                                My Events
+                            </NavLink>
+                            <NavLink to="/dashboard" className={({ isActive }) => `navbar__link ${isActive ? "active" : ""}`}>
+                                Dashboard
+                            </NavLink>
+                        </>
+                    )}
+
+                    {/* Guest (not logged in) */}
+                    {!isAuthenticated && (
+                        <NavLink to="/events" className={({ isActive }) => `navbar__link ${isActive ? "active" : ""}`}>
+                            Browse Events
+                        </NavLink>
+                    )}
                 </nav>
+
                 <div className="navbar__auth">
                     {isAuthenticated ? (
                         <div className="navbar__user" ref={dropdownRef}>
@@ -80,8 +96,8 @@ function Navbar() {
                             >  <img src={user?.avatar} alt={user?.name} className="navbar__avatar" />
                                 <span className="navbar__username">{user?.name?.split(" ")[0]}</span>
                                 <span className="navbar__chevron">{dropdownOpen ? "▲" : "▼"}</span>
-                                </button>
-                                          {dropdownOpen && (
+                            </button>
+                            {dropdownOpen && (
                                 <div className="navbar__dropdown">
                                     <div className="navbar__dropdown-header">
                                         <img src={user?.avatar} alt={user?.name} />
@@ -91,19 +107,30 @@ function Navbar() {
                                         </div>
                                     </div>
                                     <hr />
-                                    <Link to="/bookings" className="navbar__dropdown-item" onClick={() => setDropdownOpen(false)}>
-                                        📋 My Bookings
-                                    </Link>
-                                    <Link to="/dashboard" className="navbar__dropdown-item" onClick={() => setDropdownOpen(false)}>
-                                        📊 Dashboard
-                                    </Link>
+
+                                    {user?.role === "attendee" && (
+                                        <Link to="/bookings" className="navbar__dropdown-item" onClick={() => setDropdownOpen(false)}>
+                                            📋 My Bookings
+                                        </Link>
+                                    )}
+
+                                    {user?.role === "host" && (
+                                        <>
+                                            <Link to="/my-events" className="navbar__dropdown-item" onClick={() => setDropdownOpen(false)}>
+                                                🎪 My Events
+                                            </Link>
+                                            <Link to="/dashboard" className="navbar__dropdown-item" onClick={() => setDropdownOpen(false)}>
+                                                📊 Dashboard
+                                            </Link>
+                                        </>
+                                    )}
+
                                     <hr />
                                     <button className="navbar__dropdown-item navbar__dropdown-logout" onClick={handleLogout}>
                                         🚪 Log Out
                                     </button>
                                 </div>
                             )}
-
                         </div>
 
                     ) : (
@@ -131,7 +158,7 @@ function Navbar() {
 
 
             </div>
-           
+
 
         </header>
 
