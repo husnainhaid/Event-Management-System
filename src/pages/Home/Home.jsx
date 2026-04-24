@@ -111,7 +111,7 @@ useEffect(() => {
                 ) : (
                     <div className="home__grid">
                         {featured.map((evt) => (
-                            <EventCard key={evt.id} event={evt} />
+                            <EventCard key={evt._id} event={evt} />
                         ))}
                     </div>
                 )}

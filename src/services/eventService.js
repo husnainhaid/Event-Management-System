@@ -56,7 +56,10 @@ export async function getEvents({ search = "", category = "all", sort = "date" }
 export async function getFeaturedEvents() {
   const { data } = await API.get("/events");
   const events = data.events || [];
-  return events.filter((e) => e.isFeatured).slice(0, 4);
+
+  const featured = events.filter((e) => e.isFeatured);
+
+  return featured.length > 0 ? featured.slice(0, 4) : events.slice(0, 4);
 }
 
 export async function getEventById(id) {

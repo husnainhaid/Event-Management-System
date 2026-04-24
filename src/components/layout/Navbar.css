@@ -72,7 +72,7 @@
 .navbar__link.active {
     color: var(--primary-light);
 }
-navbar__auth-buttons {
+.navbar__auth-buttons {
     display: flex;
     align-items: center;
     gap: 12px;

@@ -99,7 +99,7 @@ function HostDashboard() {
         <div className="dashboard page">
             <div className="dashboard__header">
                 <div>
-                    <h1 className="section-title">📊 Dashboard</h1>
+                    <h1 className="section-title">Dashboard</h1>
                     <p className="section-sub">
                         Welcome back, <strong>{user?.name}</strong>! Manage your events below.
                     </p>
@@ -239,10 +239,6 @@ function HostDashboard() {
                                                     <tr className="dashboard__attendees-row">
                                                         <td colSpan={5}>
                                                             <div className="dashboard__attendees-panel">
-                                                                <h3>
-                                                                    👥 Attendees for <em>{evt.title}</em>
-                                                                </h3>
-
                                                                 {attendeesLoading ? (
                                                                     <Loader size="sm" message="Loading attendees…" />
                                                                 ) : attendees.length === 0 ? (

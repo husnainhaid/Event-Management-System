@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { getEventById } from "../../services/eventService";
-import { bookEvent, cancelBooking, hasUserBooked } from "../../services/bookingService";
 import { getWeatherForLocation } from "../../services/externalApiService";
 import { useAuth } from "../../context/AuthContext";
 import Loader from "../../components/common/Loader";
@@ -9,6 +8,7 @@ import Alert from "../../components/common/Alert";
 import { formatDate, formatTime, formatPrice, getAvailability } from "../../utils/formatters";
 import { CATEGORIES } from "../../utils/constants";
 import "./EventDetails.css";
+import { bookEvent, cancelBooking, hasUserBooked } from "../../services/bookingService";
 
 function EventDetails() {
     const { id } = useParams();
@@ -24,32 +24,58 @@ function EventDetails() {
     const [bookingLoading, setBookingLoading] = useState(false);
 
     useEffect(() => {
+        let mounted = true;
+
         async function load() {
+            setLoading(true);
+
             try {
                 const evt = await getEventById(id);
+
+                if (!mounted) return;
+
                 setEvent(evt);
 
-                if (isAuthenticated && user) {
-                    const { getUserBookings } = await import("../../services/bookingService");
-                    const bookings = await getUserBookings(user.id);
-                    const existing = bookings.find((b) => b.eventId === id && b.status === "confirmed");
-                    if (existing) {
-                        setAlreadyBooked(true);
-                        setBookingId(existing.id);
+                if (isAuthenticated && user?.role === "attendee") {
+                    try {
+                        const res = await hasUserBooked(id);
+
+                        if (mounted && res.booked) {
+                            setAlreadyBooked(true);
+                            setBookingId(res.booking._id);
+                        }
+                    } catch (err) {
+                        console.error("Booking check failed:", err);
                     }
                 }
 
-                // Load weather for the event location
-                const wx = await getWeatherForLocation(evt.lat || 53.3498, evt.lng || -6.2603);
-                setWeather(wx);
+                try {
+                    const lat = Number(evt.lat) || 53.3498;
+                    const lng = Number(evt.lng) || -6.2603;
+
+                    const wx = await getWeatherForLocation(lat, lng);
+
+                    if (mounted) {
+                        setWeather(wx);
+                    }
+                } catch (err) {
+                    console.error("Weather load failed:", err);
+                }
             } catch (err) {
-                console.error(err);
+                console.error("Event load failed:", err);
             } finally {
-                setLoading(false);
+                if (mounted) {
+                    setLoading(false);
+                }
             }
         }
+
         load();
-    }, [id, isAuthenticated, user]);
+
+        return () => {
+            mounted = false;
+        };
+    }, [id, isAuthenticated, user?.id, user?.role]);
 
     const handleBook = async () => {
         if (!isAuthenticated) {
@@ -58,11 +84,11 @@ function EventDetails() {
         }
         setBookingLoading(true);
         try {
-            const booking = await bookEvent(event, user);
+            const booking = await bookEvent(id);
 
             setAlreadyBooked(true);
-            setBookingId(booking.id);
-            setAlert({ type: "success", message: "🎉 Booking confirmed! Check My Bookings to view it." });
+            setBookingId(booking._id);
+            setAlert({ type: "success", message: "Booking confirmed! Check My Bookings to view it." });
         } catch (err) {
             setAlert({ type: "error", message: err.message });
         } finally {
@@ -75,7 +101,7 @@ function EventDetails() {
         if (!bookingId) return;
         setBookingLoading(true);
         try {
-            await cancelBooking(bookingId, user.id);
+            await cancelBooking(bookingId);
             setAlreadyBooked(false);
             setBookingId(null);
             setAlert({ type: "info", message: "Booking cancelled successfully." });

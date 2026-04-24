@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import Alert from "../common/Alert";
 import { CATEGORIES } from "../../utils/constants";
 import { validateEventForm } from "../../utils/validators";
+import { useLoadScript, Autocomplete } from "@react-google-maps/api";
+
+const libraries = ["places"];
 
 const EMPTY_FORM = {
     title: "",
@@ -16,6 +19,8 @@ const EMPTY_FORM = {
     capacity: 50,
     image: "",
     tags: "",
+    lat: "",
+    lng: "",
 };
 
 function Field({ label, name, type = "text", placeholder = "", min, step, form, errors, onChange }) {
@@ -42,10 +47,56 @@ function EventForm({ initialData = {}, onSubmit, loading = false }) {
     const [form, setForm] = useState({ ...EMPTY_FORM, ...initialData });
     const [errors, setErrors] = useState({});
     const [submitError, setSubmitError] = useState("");
+    const [autocomplete, setAutocomplete] = useState(null);
+
+    console.log("Sohaaaaaib",import.meta.env.VITE_GOOGLE_MAPS_API_KEY);
+
+    const { isLoaded } = useLoadScript({
+        googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
+        libraries,
+    });
+
+    const handlePlaceChanged = () => {
+        if (!autocomplete) return;
+
+        const place = autocomplete.getPlace();
+        if (!place) return;
+
+        const address = place.formatted_address || place.name || "";
+
+        let city = "";
+        let country = "";
+
+        place.address_components?.forEach((component) => {
+            if (component.types.includes("locality")) {
+                city = component.long_name;
+            }
+
+            if (component.types.includes("administrative_area_level_2") && !city) {
+                city = component.long_name;
+            }
+
+            if (component.types.includes("country")) {
+                country = component.long_name;
+            }
+        });
+
+        setForm((prev) => ({
+            ...prev,
+            venue: address,
+            city: city || prev.city,
+            country: country || prev.country,
+            lat: place.geometry?.location?.lat?.() || prev.lat,
+            lng: place.geometry?.location?.lng?.() || prev.lng,
+        }));
+
+        setErrors((prev) => ({ ...prev, venue: null, city: null }));
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setForm((prev) => ({ ...prev, [name]: value }));
+
         if (errors[name]) {
             setErrors((prev) => ({ ...prev, [name]: null }));
         }
@@ -66,7 +117,11 @@ function EventForm({ initialData = {}, onSubmit, loading = false }) {
                 ...form,
                 price: Number(form.price) || 0,
                 capacity: Number(form.capacity) || 50,
-                tags: form.tags ? form.tags.split(",").map((t) => t.trim()).filter(Boolean) : [],
+                lat: form.lat ? Number(form.lat) : undefined,
+                lng: form.lng ? Number(form.lng) : undefined,
+                tags: form.tags
+                    ? form.tags.split(",").map((t) => t.trim()).filter(Boolean)
+                    : [],
             });
         } catch (err) {
             setSubmitError(
@@ -78,11 +133,7 @@ function EventForm({ initialData = {}, onSubmit, loading = false }) {
     return (
         <form className="event-form" onSubmit={handleSubmit} noValidate>
             {submitError && (
-                <Alert
-                    type="error"
-                    message={submitError}
-                    onClose={() => setSubmitError("")}
-                />
+                <Alert type="error" message={submitError} onClose={() => setSubmitError("")} />
             )}
 
             <div className="event-form__grid">
@@ -132,7 +183,40 @@ function EventForm({ initialData = {}, onSubmit, loading = false }) {
 
                 <Field label="Date *" name="date" type="date" form={form} errors={errors} onChange={handleChange} />
                 <Field label="Time *" name="time" type="time" form={form} errors={errors} onChange={handleChange} />
-                <Field label="Venue / Address *" name="venue" placeholder="e.g. Convention Centre Dublin" form={form} errors={errors} onChange={handleChange} />
+
+                <div className="form-group">
+                    <label htmlFor="venue">Venue / Address *</label>
+
+                    {isLoaded ? (
+                        <Autocomplete
+                            onLoad={(auto) => setAutocomplete(auto)}
+                            onPlaceChanged={handlePlaceChanged}
+                        >
+                            <input
+                                id="venue"
+                                name="venue"
+                                type="text"
+                                value={form.venue}
+                                onChange={handleChange}
+                                placeholder="Search venue or address..."
+                                aria-invalid={!!errors.venue}
+                            />
+                        </Autocomplete>
+                    ) : (
+                        <input
+                            id="venue"
+                            name="venue"
+                            type="text"
+                            value={form.venue}
+                            onChange={handleChange}
+                            placeholder="Loading Google Places..."
+                            aria-invalid={!!errors.venue}
+                        />
+                    )}
+
+                    {errors.venue && <span className="form-error">{errors.venue}</span>}
+                </div>
+
                 <Field label="City *" name="city" placeholder="e.g. Dublin" form={form} errors={errors} onChange={handleChange} />
                 <Field label="Country" name="country" placeholder="e.g. Ireland" form={form} errors={errors} onChange={handleChange} />
                 <Field label="Price (€)" name="price" type="number" min="0" step="0.01" placeholder="0 for Free" form={form} errors={errors} onChange={handleChange} />
